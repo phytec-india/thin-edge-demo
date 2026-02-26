@@ -1,0 +1,16 @@
+.wy-nav-content {
+    max-width: 100% !important;
+}
+
+.wy-nav-content {
+    padding: 2em;
+}
+
+body {
+    font-size: 19px;
+}
+
+li, p {
+    font-size: 19px !important;
+    line-height: 1.9;
+}
