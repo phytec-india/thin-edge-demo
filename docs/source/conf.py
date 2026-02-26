@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'PHYTedge-Modbus-Plugin'
+project = 'Thin-edge Demo'
 copyright = '2025, PHYTEC INDIA'
 author = 'Dibyajyoti Jena'
 

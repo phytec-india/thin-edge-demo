@@ -1,9 +1,9 @@
-.. PHYTedge-Modbus-Plugin documentation master file, created by
+.. Thin-edge Demo documentation master file, created by
    sphinx-quickstart on Mon May 26 15:34:08 2025.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to PHYTedge-Modbus-Plugin's documentation!
+Welcome to Thin-edge Demo documentation!
 ==================================================
 
 .. toctree::
