@@ -354,16 +354,21 @@ Thin-Edge Release Tag:
 
    Te-PD-25.1.0
 
+**Note:** Please find the patches and the setup script in the 
+`thin-edge-demo <https://github.com/phytec-india/thin-edge-demo/tree/main/bsp>`_ 
+GitHub repository.
+
 **Directory Structure**
 
 Inside the BSP root directory:
 
 ::
 
-   yocto-imx8mm-Tauri-L/
-   ├── patches/
-   │     ├── 0001-Add-Te-PD-25.1.0-and-custom-headless-image-modificat.patch
-   │     └── 0002-meta-tpm-Fix-tpm2-tss-engine-build-issue.patch
+   bsp/
+   ├── patches
+   │   ├── 0001-Add-Te-PD-25.1.0-and-custom-headless-image-modificat.patch
+   │   └── 0002-meta-tpm-Fix-tpm2-tss-engine-build-issue.patch
+   ├── Release-Notes-Tauri-L_i.MX8MM-Thin-Edge
    └── setupTE.sh
 
 **Patch Repository**
@@ -480,7 +485,7 @@ step-by-step instructions for flashing the Thin-Edge image to your Tauri-L devic
 
 **Downloading and Flashing the Image**
 
-1. Download the latest Thin-Edge.wic.xz image from the OneDrive.
+1. Download the release image for Tauri-L i.MX8MM from `Thin-edge Demo - Version 0.1.0 <https://github.com/phytec-india/thin-edge-demo/releases/tag/v0.1.0>`_ and extract the release file to get the .wic.xz image.
 
 .. warning::
 
