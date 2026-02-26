@@ -372,12 +372,16 @@ scarthgap-rust-mixin  /home/phytec/tauri-L-test_yocto/sources/poky/../meta-lts-
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Te</span><span class="o">-</span><span class="n">PD</span><span class="o">-</span><span class="mf">25.1.0</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> Please find the patches and the setup script in the
+<a class="reference external" href="https://github.com/phytec-india/thin-edge-demo/tree/main/bsp">thin-edge-demo</a>
+GitHub repository.</p>
 <p><strong>Directory Structure</strong></p>
 <p>Inside the BSP root directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>yocto-imx8mm-Tauri-L/
-├── patches/
-│     ├── 0001-Add-Te-PD-25.1.0-and-custom-headless-image-modificat.patch
-│     └── 0002-meta-tpm-Fix-tpm2-tss-engine-build-issue.patch
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>bsp/
+├── patches
+│   ├── 0001-Add-Te-PD-25.1.0-and-custom-headless-image-modificat.patch
+│   └── 0002-meta-tpm-Fix-tpm2-tss-engine-build-issue.patch
+├── Release-Notes-Tauri-L_i.MX8MM-Thin-Edge
 └── setupTE.sh
 </pre></div>
 </div>
@@ -471,7 +475,7 @@ $ ./setupTE.sh
 </ul>
 <p><strong>Downloading and Flashing the Image</strong></p>
 <ol class="arabic simple">
-<li><p>Download the latest Thin-Edge.wic.xz image from the OneDrive.</p></li>
+<li><p>Download the release image for Tauri-L i.MX8MM from <a class="reference external" href="https://github.com/phytec-india/thin-edge-demo/releases/tag/v0.1.0">Thin-edge Demo - Version 0.1.0</a> and extract the release file to get the .wic.xz image.</p></li>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
