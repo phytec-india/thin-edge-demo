@@ -1,0 +1,15 @@
+[Unit]
+Description=Meter Modbus Python Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=<mention_your_venv_python3_path> <mention_your_modbus_plugin_main.py_path>
+WorkingDirectory=/home/debian/dev
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

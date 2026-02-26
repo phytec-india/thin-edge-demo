@@ -1,0 +1,57 @@
+services:
+  modbus-c8y:
+    build: .
+    image: modbus-plugin
+    network_mode: host
+    devices:
+      - /dev/ttyUSB0
+    restart: unless-stopped
+    volumes:
+      - /etc/tedge/device-certs/tedge-certificate.pem:/etc/tedge/device-certs/tedge-certificate.pem:ro
+      - /etc/tedge/device-certs/tedge-private-key.pem:/etc/tedge/device-certs/tedge-private-key.pem:ro
+    environment:
+      CLOUD_PROVIDER: "c8y"
+      DEVICE_ID: "<Your Cumulocity Device ID>"
+      C8Y_URL: "<Your Cumulocity URL>"
+      C8Y_HTTP: "<Your Cumulocity HTTP URL eg. same as C8Y_URL>"
+      C8Y_MQTT: "<Your Cumulocity MQTT URL eg. same as C8Y_URL:8883>"
+      C8Y_USER_ID: "<Your Cumulocity User ID>"
+      C8Y_PASSWORD: "<Your Cumulocity Password>"
+      C8Y_ROOT_CERT_PATH: "/etc/tedge/device-certs/"
+      CLIENT_CERT: "/etc/tedge/device-certs/tedge-certificate.pem"
+      CLIENT_KEY: "/etc/tedge/device-certs/tedge-private-key.pem"
+
+  modbus-aws:
+    build: .
+    image: modbus-plugin
+    network_mode: host
+    devices:
+      - /dev/ttyUSB5
+    restart: unless-stopped
+    volumes:
+      - /etc/tedge/device-certs/tedge-certificate.pem:/etc/tedge/device-certs/tedge-certificate.pem:ro
+      - /etc/tedge/device-certs/tedge-private-key.pem:/etc/tedge/device-certs/tedge-private-key.pem:ro
+    environment:
+      CLOUD_PROVIDER: "aws"
+      AWS_URL: "<your-aws-endpoint>"
+      CLIENT_CERT: "/etc/tedge/device-certs/tedge-certificate.pem"
+      CLIENT_KEY: "/etc/tedge/device-certs/tedge-private-key"
+
+  modbus-tb:
+    build: .
+    image: modbus-plugin
+    network_mode: host
+    devices:
+      - /dev/ttyUSB0
+    restart: unless-stopped
+    volumes:
+      - /etc/tedge/device-certs/tedge-certificate.pem:/etc/tedge/device-certs/tedge-certificate.pem:ro
+      - /etc/tedge/device-certs/tedge-private-key.pem:/etc/tedge/device-certs/tedge-private-key.pem:ro
+      - /etc/tedge/device-certs/ca.pem:/etc/tedge/device-certs/ca.pem:ro
+    environment:
+      CLOUD_PROVIDER: "tb"
+      TB_HOST: "<Your ThingsBoard Host>"
+      TB_PORT: "8883"
+      CA_CERT: "/etc/tedge/device-certs/ca.pem"
+      CLIENT_CERT: "/etc/tedge/device-certs/tedge-certificate.pem"
+      CLIENT_KEY: "/etc/tedge/device-certs/tedge-private-key.pem"
