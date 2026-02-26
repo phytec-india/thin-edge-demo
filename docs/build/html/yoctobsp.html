@@ -1,0 +1,565 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integration of Thin-edge.io with Tauri-L i.MX8MM Yocto BSP &mdash; PHYTedge-Modbus-Plugin  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=ff10b468" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Modbus Smart Energy Meter" href="overview.html" />
+    <link rel="prev" title="Welcome to PHYTedge-Modbus-Plugin’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PHYTedge-Modbus-Plugin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Integration of Thin-edge.io with Tauri-L i.MX8MM Yocto BSP</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#host-preparation-yocto-bsp-build-steps">Host Preparation &amp; Yocto BSP build Steps:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#thin-edge-io-integration">Thin-edge.io Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tauri-l-thin-edge-standard-release-patch-integration">Tauri-L Thin-Edge Standard Release Patch Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#patch-scope">Patch Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#verification">Verification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#flashing-and-initial-setup-of-tauri-l-device">Flashing and Initial Setup of Tauri-L Device</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Modbus Smart Energy Meter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital.html">Digital Twin</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PHYTedge-Modbus-Plugin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Integration of Thin-edge.io with Tauri-L i.MX8MM Yocto BSP</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/yoctobsp.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="integration-of-thin-edge-io-with-tauri-l-i-mx8mm-yocto-bsp">
+<span id="thin-edge-tauri-imx8mm-build"></span><h1>Integration of Thin-edge.io with Tauri-L i.MX8MM Yocto BSP<a class="headerlink" href="#integration-of-thin-edge-io-with-tauri-l-i-mx8mm-yocto-bsp" title="Permalink to this heading"></a></h1>
+<p>This section describes the procedure to set up and build the
+Thin-edge enabled Yocto BSP for the PHYTEC phyGATE-Tauri-L i.MX8MM platform.</p>
+<p><strong>Release Information:</strong></p>
+<ul class="simple">
+<li><p><strong>BSP:</strong> BSP-Yocto-NXP-i.MX8MM-PD25.1.0</p></li>
+<li><p><strong>Yocto Version:</strong> 5.0.8 LTS</p></li>
+<li><p><strong>Branch:</strong> scarthgap</p></li>
+</ul>
+<section id="host-preparation-yocto-bsp-build-steps">
+<h2>Host Preparation &amp; Yocto BSP build Steps:<a class="headerlink" href="#host-preparation-yocto-bsp-build-steps" title="Permalink to this heading"></a></h2>
+<p>You can set up the host or use one of our build-container to run a Yocto build. You need to have a running Linux distribution. It should be running on a powerful machine since a lot of compiling will need to be done.</p>
+<p><strong>Host setup:</strong></p>
+<p>Yocto needs a handful of additional packages on your host. For Ubuntu you need:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>host:~$ sudo apt install gawk wget git diffstat unzip texinfo \
+gcc build-essential chrpath socat cpio python3 python3-pip \
+python3-pexpect xz-utils debianutils iputils-ping python3-git \
+python3-jinja2 libegl1-mesa libsdl1.2-dev \
+python3-subunit mesa-common-dev zstd liblz4-tool file locales libacl1
+</pre></div>
+</div>
+<p>If you want to use a build-container, you only need to install following packages on your host</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>host:~$ sudo apt install wget git
+</pre></div>
+</div>
+<p>Continue with the next step Git Configuration after that. Also see the Phytec Yocto documentation for using build-container.</p>
+<p><a class="reference external" href="https://phytec.github.io/doc-bsp-yocto/yocto/scarthgap.html#using-build-container">https://phytec.github.io/doc-bsp-yocto/yocto/scarthgap.html#using-build-container</a></p>
+<p><strong>Git configuration:</strong></p>
+<p>You should set name and email in your Git configuration, otherwise, Bitbake will complain during the first build. You can use the two commands to set them directly.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git config --global user.email &quot;your@email.com&quot;
+$ git config --global user.name &quot;Your Name&quot;
+</pre></div>
+</div>
+<p>Create a new working directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir yocto-imx8mm-Tauri-L
+$ cd yocto-imx8mm-Tauri-L
+</pre></div>
+</div>
+<p><strong>Download phyLinux Tool</strong></p>
+<p>The phyLinux setup tool is available from the PHYTEC download server:</p>
+<p><a class="reference external" href="https://download.phytec.de/Software/Linux/Yocto/Tools/phyLinux">https://download.phytec.de/Software/Linux/Yocto/Tools/phyLinux</a></p>
+<p>Download the tool:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://download.phytec.de/Software/Linux/Yocto/Tools/phyLinux
+</pre></div>
+</div>
+<p>Make it executable and initialize:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ chmod +x phyLinux
+$ ./phyLinux init
+</pre></div>
+</div>
+<p>On the first initialization, the phyLinux script will ask you to install the Repo tool in your /usr/local/bin directory. During the execution of the init command, you need to choose your processor platform (SoC), PHYTEC’s BSP release number, and the hardware you are working on</p>
+<p><strong>Selecting SoC Platform:</strong></p>
+<p>During BSP setup, select the SoC platform(Choose number):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>***************************************************
+* Please choose one of the available SoC Platforms:
+*
+*   1: am335x
+*   2: am57x
+*   3: am62ax
+*   4: am62lx
+*   5: am62px
+*   6: am62x
+*   7: am64x
+*   8: am67x
+*   9: am68x
+*   10: imx6
+*   11: imx6ul
+*   12: imx7
+*   13: imx8
+*   14: imx8m
+*   15: imx8mm
+*   16: imx8mp
+*   ........
+*
+* $  15
+</pre></div>
+</div>
+<p><strong>Selecting Release:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>***************************************************
+* Please choose one of the available Releases:
+*
+*   1: BSP-Yocto-Ampliphy-i.MX8MM-master (master)
+*   2: BSP-Yocto-FSL-i.MX8MM-ALPHA1 (unknown)
+*   3: BSP-Yocto-FSL-i.MX8MM-ALPHA2 (unknown)
+*   4: BSP-Yocto-FSL-i.MX8MM-PD20.1-rc1 (unknown)
+*   5: BSP-Yocto-FSL-i.MX8MM-PD20.1-rc2 (unknown)
+*   6: BSP-Yocto-FSL-i.MX8MM-PD20.1-rc3 (warrior)
+*   7: BSP-Yocto-FSL-i.MX8MM-PD20.1.0 (warrior)
+*   8: BSP-Yocto-FSL-i.MX8MM-PD21.1-rc1 (zeus)
+*   9: BSP-Yocto-FSL-i.MX8MM-PD21.1-rc2 (zeus)
+*   10: BSP-Yocto-FSL-i.MX8MM-PD21.1-rc3 (zeus)
+*   11: BSP-Yocto-FSL-i.MX8MM-PD21.1.0 (zeus)
+*   12: BSP-Yocto-NXP-i.MX8MM-PD22.1-rc2 (hardknott)
+*   13: BSP-Yocto-NXP-i.MX8MM-PD22.1-rc3 (hardknott)
+*   14: BSP-Yocto-NXP-i.MX8MM-PD22.1.0 (hardknott)
+*   15: BSP-Yocto-NXP-i.MX8MM-PD22.1.1-rc1 (hardknott)
+*   16: BSP-Yocto-NXP-i.MX8MM-PD22.1.1-rc2 (hardknott)
+*   17: BSP-Yocto-NXP-i.MX8MM-PD22.1.1-rc3 (hardknott)
+*   18: BSP-Yocto-NXP-i.MX8MM-PD22.1.1-rc4 (hardknott)
+*   19: BSP-Yocto-NXP-i.MX8MM-PD22.1.1 (hardknott)
+*   20: BSP-Yocto-NXP-i.MX8MM-PD22.1.y (hardknott)
+*   21: BSP-Yocto-NXP-i.MX8MM-PD23.1-rc1 (kirkstone)
+*   22: BSP-Yocto-NXP-i.MX8MM-PD23.1-rc2 (kirkstone)
+*   23: BSP-Yocto-NXP-i.MX8MM-PD23.1-rc3 (kirkstone)
+*   24: BSP-Yocto-NXP-i.MX8MM-PD23.1-rc4 (kirkstone)
+*   25: BSP-Yocto-NXP-i.MX8MM-PD23.1-rc5 (kirkstone)
+*   26: BSP-Yocto-NXP-i.MX8MM-PD23.1.0 (kirkstone)
+*   27: BSP-Yocto-NXP-i.MX8MM-PD23.1.y (kirkstone)
+*   28: BSP-Yocto-NXP-i.MX8MM-PD25.1-rc1 (scarthgap)
+*   29: BSP-Yocto-NXP-i.MX8MM-PD25.1-rc2 (scarthgap)
+*   30: BSP-Yocto-NXP-i.MX8MM-PD25.1.0 (scarthgap)
+*   31: BSP-Yocto-NXP-i.MX8MM-PD25.1.1-rc1 (scarthgap)
+*   32: BSP-Yocto-NXP-i.MX8MM-PD25.1.y (scarthgap)
+*
+* $ 30
+</pre></div>
+</div>
+<p><strong>Selecting Target Machine</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>*********************************************************************
+* Please choose one of the available builds:
+*
+* no:                 machine: description and article number
+*                             distro: supported yocto distribution
+*                             target: supported build target
+*
+* 1: phyboard-polis-imx8mm-5: PHYTEC phyBOARD-Polis i.MX8M Mini 1-4 GB RAM
+*                             Polis PL1532.2(a)/PL1532.3
+*                             PB-02820-00I.A6
+*                             distro: ampliphy-vendor
+*                             target: -c populate_sdk phytec-qt6demo-image
+*                             target: phytec-headless-image
+*                             target: phytec-qt6demo-image
+*                             target: phytec-vision-image
+* 2: phyboard-polis-imx8mm-5: PHYTEC phyBOARD-Polis i.MX8M Mini 1-4 GB RAM
+*                             Polis PL1532.2(a)/PL1532.3
+*                             PB-02820-00I.A6
+*                             distro: ampliphy-vendor-rauc
+*                             target: phytec-headless-bundle
+*                             target: phytec-headless-image
+* 3: phyboard-polis-imx8mm-5: PHYTEC phyBOARD-Polis i.MX8M Mini 1-4 GB RAM
+*                             Polis PL1532.2(a)/PL1532.3
+*                             PB-02820-00I.A6
+*                             distro: securiphy-vendor
+*                             target: phytec-securiphy-bundle
+*                             target: phytec-securiphy-image
+* 4: phyboard-polis-imx8mm-5: PHYTEC phyBOARD-Polis i.MX8M Mini 1-4 GB RAM
+*                             Polis PL1532.2(a)/PL1532.3
+*                             PB-02820-00I.A6
+*                             distro: securiphy-vendor-provisioning
+*                             target: phytec-provisioning-image
+* 5: phygate-tauri-l-imx8mm-2: PHYTEC phyGATE-Tauri-L i.MX8M Mini 2GB RAM
+*                             RS232/RS485 16GB eMMC
+*                             PB-03420-001.A2, PB-03420-002.A1
+*                             distro: ampliphy-vendor
+*                             target: phytec-headless-image
+* 6: phygate-tauri-l-imx8mm-2: PHYTEC phyGATE-Tauri-L i.MX8M Mini 2GB RAM
+*                             RS232/RS485 16GB eMMC
+*                             PB-03420-001.A2, PB-03420-002.A1
+*                             distro: securiphy-vendor
+*                             target: phytec-securiphy-bundle
+*                             target: phytec-securiphy-image
+* 7: phygate-tauri-l-imx8mm-2: PHYTEC phyGATE-Tauri-L i.MX8M Mini 2GB RAM
+*                             RS232/RS485 16GB eMMC
+*                             PB-03420-001.A2, PB-03420-002.A1
+*                             distro: securiphy-vendor-provisioning
+*                             target: phytec-provisioning-image
+*
+* $ 5
+</pre></div>
+</div>
+<p>This sets:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MACHINE</span> <span class="o">=</span> <span class="s2">&quot;phygate-tauri-l-imx8mm-2&quot;</span>
+<span class="n">DISTRO</span>  <span class="o">=</span> <span class="s2">&quot;ampliphy-vendor&quot;</span>
+</pre></div>
+</div>
+<p><strong>Build Environment Setup</strong></p>
+<p>Before starting the build, verify host configuration in:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">build</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">local</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+<p>Your local modifications for the current build are stored here. Depending on the SoC, you might need to accept license agreements.
+For example, to build the image for Freescale/NXP processors you need to accept the GPU and VPU binary license agreements. You have to uncomment the corresponding line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment to accept NXP EULA # EULA can be found under</span>
+<span class="o">../</span><span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">freescale</span><span class="o">/</span><span class="n">EULA</span> <span class="n">ACCEPT_FSL_EULA</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+<span class="n">ACCEPT_FSL_EULA</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+</pre></div>
+</div>
+<p>Initialize the Yocto build environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source sources/poky/oe-init-build-env
+</pre></div>
+</div>
+<p><strong>Building the Image</strong></p>
+<p>To build the default headless image:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ bitbake phytec-headless-image
+</pre></div>
+</div>
+<p>This generates the production-ready image for the
+phyGATE-Tauri-L i.MX8MM platform.</p>
+<p>Output images will be located under:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">build</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">deploy</span><span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="n">phygate</span><span class="o">-</span><span class="n">tauri</span><span class="o">-</span><span class="n">l</span><span class="o">-</span><span class="n">imx8mm</span><span class="o">-</span><span class="mi">2</span><span class="o">/</span>
+</pre></div>
+</div>
+</section>
+<section id="thin-edge-io-integration">
+<h2>Thin-edge.io Integration<a class="headerlink" href="#thin-edge-io-integration" title="Permalink to this heading"></a></h2>
+<p><strong>Adding required Thin-edge Layers</strong></p>
+<p>To enable Thin-edge.io support, the following layers must be added:</p>
+<ul class="simple">
+<li><p>meta-tedge</p></li>
+<li><p>meta-lts-mixins</p></li>
+</ul>
+<p><strong>Layer Placement</strong></p>
+<p>Clone both layers inside the <code class="docutils literal notranslate"><span class="pre">sources</span></code> directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd sources
+$ git clone https://github.com/thin-edge/meta-tedge.git -b scarthgap
+$ git clone https://github.com/thin-edge/meta-lts-mixins -b scarthgap/rust
+</pre></div>
+</div>
+<p><strong>Add Layers to bblayers.conf</strong></p>
+<p>From the yocto/build directory, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ bitbake-layers add-layer ../sources/meta-tedge/meta-tedge
+$ bitbake-layers add-layer ../sources/meta-tedge/meta-tedge-common
+$ bitbake-layers add-layer ../sources/meta-lts-mixins
+</pre></div>
+</div>
+<p><strong>Verify and Check that the layers are Added or Not:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ bitbake-layers show-layers
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>phy@phytec:~/yocto-imx8mm-Tauri-L/build$ bitbake-layers show-layers
+NOTE: Starting bitbake server...
+layer                 path                                                                        priority
+===========================================================================================================
+core                  /home/phytec/tauri-L-test_yocto/sources/poky/../poky/meta                    5
+yocto                 /home/phytec/tauri-L-test_yocto/sources/poky/../poky/meta-poky               5
+openembedded-layer    /home/phytec/tauri-L-test_yocto/sources/poky/../meta-openembedded/meta-oe       5
+networking-layer      /home/phytec/tauri-L-test_yocto/sources/poky/../meta-openembedded/meta-networking  5
+meta-python           /home/phytec/tauri-L-test_yocto/sources/poky/../meta-openembedded/meta-python    5
+multimedia-layer      /home/phytec/tauri-L-test_yocto/sources/poky/../meta-openembedded/meta-multimedia 5
+filesystems-layer     /home/phytec/tauri-L-test_yocto/sources/poky/../meta-openembedded/meta-filesystems  5
+perl-layer            /home/phytec/tauri-L-test_yocto/sources/poky/../meta-openembedded/meta-perl  5
+chromium-browser-layer  /home/phytec/tauri-L-test_yocto/sources/poky/../meta-browser/meta-chromium  7
+clang-layer           /home/phytec/tauri-L-test_yocto/sources/poky/../meta-clang            7
+freescale-layer       /home/phytec/tauri-L-test_yocto/sources/poky/../meta-freescale        5
+freescale-3rdparty    /home/phytec/tauri-L-test_yocto/sources/poky/../meta-freescale-3rdparty  4
+freescale-distro      /home/phytec/tauri-L-test_yocto/sources/poky/../meta-freescale-distro  4
+meta-arm              /home/phytec/tauri-L-test_yocto/sources/poky/../meta-arm/meta-arm     5
+arm-toolchain         /home/phytec/tauri-L-test_yocto/sources/poky/../meta-arm/meta-arm-toolchain  5
+qt6-layer             /home/phytec/tauri-L-test_yocto/sources/poky/../meta-qt6              5
+security              /home/phytec/tauri-L-test_yocto/sources/poky/../meta-security         8
+tpm-layer             /home/phytec/tauri-L-test_yocto/sources/poky/../meta-security/meta-tpm  6
+virtualization-layer  /home/phytec/tauri-L-test_yocto/sources/poky/../meta-virtualization   8
+fsl-bsp-release       /home/phytec/tauri-L-test_yocto/sources/poky/../meta-imx/meta-imx-bsp  8
+fsl-sdk-release       /home/phytec/tauri-L-test_yocto/sources/poky/../meta-imx/meta-imx-sdk  8
+imx-machine-learning  /home/phytec/tauri-L-test_yocto/sources/poky/../meta-imx/meta-imx-ml  8
+imx-demo              /home/phytec/tauri-L-test_yocto/sources/poky/../meta-nxp-demo-experience  7
+rauc                  /home/phytec/tauri-L-test_yocto/sources/poky/../meta-rauc             6
+phytec                /home/phytec/tauri-L-test_yocto/sources/poky/../meta-phytec           20
+ampliphy              /home/phytec/tauri-L-test_yocto/sources/poky/../meta-ampliphy         10
+qt6-phytec            /home/phytec/tauri-L-test_yocto/sources/poky/../meta-qt6-phytec       11
+meta-tedge            /home/phytec/tauri-L-test_yocto/sources/poky/../meta-tedge/meta-tedge  6
+meta-tedge-common     /home/phytec/tauri-L-test_yocto/sources/poky/../meta-tedge/meta-tedge-common  6
+scarthgap-rust-mixin  /home/phytec/tauri-L-test_yocto/sources/poky/../meta-lts-mixins       6
+</pre></div>
+</div>
+<p><strong>To avoid update-rc.d / SysVinit Conflict</strong>:</p>
+<div class="admonition error">
+<p class="admonition-title">Error</p>
+<p>inherits update-rc.d but doesn’t set INITSCRIPT_NAME</p>
+</div>
+<p>Disable SysVinit in Yocto/build/conf/local.conf:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#Disable SysVinit explicitly</span>
+<span class="n">DISTRO_FEATURES</span><span class="p">:</span><span class="n">remove</span> <span class="o">=</span> <span class="s2">&quot; sysvinit&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="tauri-l-thin-edge-standard-release-patch-integration">
+<h2>Tauri-L Thin-Edge Standard Release Patch Integration<a class="headerlink" href="#tauri-l-thin-edge-standard-release-patch-integration" title="Permalink to this heading"></a></h2>
+<p>This section describes the official method used to integrate Thin-edge modifications into the Tauri-L i.MX8MM BSP release.</p>
+<p>Since <code class="docutils literal notranslate"><span class="pre">meta-phytec</span></code> is a maintained internal vendor layer, patches are applied directly using the controlled automation script.</p>
+<p><strong>Release Version</strong></p>
+<p>Target BSP:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">BSP</span><span class="o">-</span><span class="n">Yocto</span><span class="o">-</span><span class="n">NXP</span><span class="o">-</span><span class="n">i</span><span class="o">.</span><span class="n">MX8MM</span><span class="o">-</span><span class="n">PD25</span><span class="mf">.1.0</span>
+</pre></div>
+</div>
+<p>Thin-Edge Release Tag:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Te</span><span class="o">-</span><span class="n">PD</span><span class="o">-</span><span class="mf">25.1.0</span>
+</pre></div>
+</div>
+<p><strong>Directory Structure</strong></p>
+<p>Inside the BSP root directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>yocto-imx8mm-Tauri-L/
+├── patches/
+│     ├── 0001-Add-Te-PD-25.1.0-and-custom-headless-image-modificat.patch
+│     └── 0002-meta-tpm-Fix-tpm2-tss-engine-build-issue.patch
+└── setupTE.sh
+</pre></div>
+</div>
+<p><strong>Patch Repository</strong></p>
+<p>All official release patches and automation scripts are hosted in the
+internal release repository.</p>
+<p>Link:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">internal</span><span class="o">-</span><span class="n">git</span><span class="o">-</span><span class="n">server</span><span class="o">&gt;/</span><span class="n">Tauri</span><span class="o">-</span><span class="n">L</span><span class="o">/</span><span class="n">Te</span><span class="o">-</span><span class="n">PD</span><span class="o">-</span><span class="mf">25.1.0</span><span class="o">-</span><span class="n">release</span>
+</pre></div>
+</div>
+<p>The repository must contain:</p>
+<ul class="simple">
+<li><p>Version-tagged patches</p></li>
+<li><p>setupTE.sh script</p></li>
+<li><p>Release notes</p></li>
+</ul>
+<p><strong>Applying Patches</strong></p>
+<p>Make the script executable &amp; Execute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ chmod +x setupTE.sh
+$ ./setupTE.sh
+</pre></div>
+</div>
+<p>Expected Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">==============================================</span>
+ <span class="n">Applying</span> <span class="n">Layer</span> <span class="n">Patches</span> <span class="k">for</span> <span class="n">Te</span><span class="o">-</span><span class="n">PD</span><span class="o">-</span><span class="mf">25.1.0</span>
+<span class="o">==============================================</span>
+
+<span class="n">Checking</span> <span class="n">Patch</span> <span class="mi">0001</span> <span class="p">(</span><span class="n">meta</span><span class="o">-</span><span class="n">phytec</span><span class="p">)</span><span class="o">...</span>
+<span class="n">Patch</span> <span class="mi">0001</span> <span class="n">applied</span> <span class="n">successfully</span><span class="o">.</span>
+
+<span class="n">Checking</span> <span class="n">Patch</span> <span class="mi">0002</span> <span class="p">(</span><span class="n">meta</span><span class="o">-</span><span class="n">security</span><span class="p">)</span><span class="o">...</span>
+<span class="n">Patch</span> <span class="mi">0002</span> <span class="n">applied</span> <span class="n">successfully</span><span class="o">.</span>
+
+<span class="o">==============================================</span>
+ <span class="n">All</span> <span class="n">required</span> <span class="n">patches</span> <span class="n">processed</span> <span class="n">successfully</span><span class="o">.</span>
+<span class="o">==============================================</span>
+</pre></div>
+</div>
+<p>Whitespace warnings may appear but do not impact functionality.</p>
+</section>
+<section id="patch-scope">
+<h2>Patch Scope<a class="headerlink" href="#patch-scope" title="Permalink to this heading"></a></h2>
+<p><strong>Patch 0001</strong></p>
+<p>Layer: <code class="docutils literal notranslate"><span class="pre">meta-phytec</span></code></p>
+<p>Purpose:</p>
+<ul class="simple">
+<li><p>Add Te-PD-25.1.0 support</p></li>
+<li><p>Modify phytec-headless-image</p></li>
+<li><p>Integrate Thin-edge components</p></li>
+<li><p>Add required configuration updates</p></li>
+</ul>
+<p><strong>Patch 0002</strong></p>
+<p>Layer: <code class="docutils literal notranslate"><span class="pre">meta-security/meta-tpm</span></code></p>
+<p>Purpose:</p>
+<ul class="simple">
+<li><p>Fix tpm2-tss-engine build issue</p></li>
+<li><p>Ensure compatibility with scarthgap toolchain</p></li>
+</ul>
+<p><strong>Build After Patch Application</strong></p>
+<p>Initialize build environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source poky/oe-init-build-env build
+</pre></div>
+</div>
+<p>Build image:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ bitbake phytec-headless-image
+</pre></div>
+</div>
+</section>
+<section id="verification">
+<h2>Verification<a class="headerlink" href="#verification" title="Permalink to this heading"></a></h2>
+<p>Verify new directory inside meta-phytec:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ls sources/meta-phytec/Te-PD-25.1.0
+</pre></div>
+</div>
+<p>Verify TPM fix modification:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ vi sources/meta-security/meta-tpm/recipes-tpm2/tpm2-tss-engine/tpm2-tss-engine_1.1.0.bb
+</pre></div>
+</div>
+</section>
+<section id="flashing-and-initial-setup-of-tauri-l-device">
+<h2>Flashing and Initial Setup of Tauri-L Device<a class="headerlink" href="#flashing-and-initial-setup-of-tauri-l-device" title="Permalink to this heading"></a></h2>
+<p>step-by-step instructions for flashing the Thin-Edge image to your Tauri-L device and performing the initial setup.</p>
+<p><strong>Prerequisites:</strong></p>
+<ul class="simple">
+<li><p>A microSD card (minimum 8GB recommended)</p></li>
+<li><p>SD card reader/writer</p></li>
+<li><p>Access to the Thin-Edge.wic image from OneDrive</p></li>
+<li><p>Linux PC with network connectivity</p></li>
+<li><p>Ethernet cable</p></li>
+<li><p>Tauri-L device</p></li>
+</ul>
+<p><strong>Downloading and Flashing the Image</strong></p>
+<ol class="arabic simple">
+<li><p>Download the latest Thin-Edge.wic.xz image from the OneDrive.</p></li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Make sure to verify the integrity of the downloaded image before flashing.</p>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Write the image to the SD card using the <cite>xzcat</cite> command. Replace <cite>&lt;your_device&gt;</cite> with your SD card device (e.g., sdb, mmcblk0).</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>xzcat<span class="w"> </span>phytec-headless-image-phygate-tauri-l-imx8mm-2.rootfs.wic.xz<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>dd<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/dev/sd*<span class="w"> </span><span class="nv">bs</span><span class="o">=</span>1M<span class="w"> </span><span class="nv">conv</span><span class="o">=</span>fsync<span class="w"> </span><span class="nv">status</span><span class="o">=</span>progress
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Double-check the device name to avoid overwriting the wrong drive. You can use <cite>lsblk</cite> command to identify your SD card device.</p>
+</div>
+<p><strong>Hardware Setup</strong></p>
+<ol class="arabic simple" start="3">
+<li><p>Insert the flashed SD card into the Tauri-L device and power it on.</p></li>
+<li><p>Connect an ethernet cable to the LAN2 port of the Tauri-L device.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Port mapping on Tauri-L:</p>
+<ul class="simple">
+<li><p>MAC1 corresponds to LAN2</p></li>
+<li><p>MAC2 corresponds to LAN1</p></li>
+</ul>
+</div>
+<p><strong>Hardware Device Connection</strong></p>
+<ol class="arabic simple" start="5">
+<li><p>Locate the MAC address on the top label of your Tauri-L device.</p></li>
+<li><p>Connect your PC to the same network and scan for devices using:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>arp-scan<span class="w"> </span>--interface<span class="o">=</span>&lt;your_interface&gt;<span class="w"> </span>--localnet
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Replace <cite>&lt;your_interface&gt;</cite> with your network interface name (e.g., enp2s0, eth0).
+You can find your interface name using <cite>ip link show</cite> command.</p>
+</div>
+<ol class="arabic simple" start="7">
+<li><p>Find your Tauri-L’s MAC address in the scan output to identify its IP address.</p></li>
+</ol>
+<p><strong>Initial Access</strong></p>
+<ol class="arabic simple" start="8">
+<li><p>Connect to the Tauri-L device via SSH:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>root@&lt;Tauri-L_IP_address&gt;
+</pre></div>
+</div>
+<p>Verify Thin-edge installation after flashing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="nd">@device</span><span class="p">:</span><span class="o">~</span><span class="c1"># tedge --version</span>
+<span class="n">root</span><span class="nd">@device</span><span class="p">:</span><span class="o">~</span><span class="c1"># systemctl status tedge-agent</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to PHYTedge-Modbus-Plugin’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="overview.html" class="btn btn-neutral float-right" title="Modbus Smart Energy Meter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, PHYTEC INDIA.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,851 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modbus Smart Energy Meter &mdash; PHYTedge-Modbus-Plugin  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=ff10b468" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Digital Twin" href="digital.html" />
+    <link rel="prev" title="Integration of Thin-edge.io with Tauri-L i.MX8MM Yocto BSP" href="yoctobsp.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PHYTedge-Modbus-Plugin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="yoctobsp.html">Integration of Thin-edge.io with Tauri-L i.MX8MM Yocto BSP</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Modbus Smart Energy Meter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#project-overview">Project Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-architecture">Project Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#technical-stack">Technical Stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#device-connection">Device connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#source-code-brief">Source Code Brief</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started-with-thin-edge">Getting started with Thin-edge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#energy-meter-device-selection">Energy Meter Device Selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connecting-to-cumulocity">Connecting to Cumulocity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connecting-to-aws">Connecting to AWS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connecting-to-thingsboard">Connecting to Thingsboard</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="digital.html">Digital Twin</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PHYTedge-Modbus-Plugin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Modbus Smart Energy Meter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="modbus-smart-energy-meter">
+<span id="overview"></span><h1>Modbus Smart Energy Meter<a class="headerlink" href="#modbus-smart-energy-meter" title="Permalink to this heading"></a></h1>
+<section id="project-overview">
+<h2>Project Overview<a class="headerlink" href="#project-overview" title="Permalink to this heading"></a></h2>
+<p>This project provides a robust and efficient <strong>Modbus Smart Energy Meter</strong> designed for <strong>Industrial IoT (IIoT) gateways</strong>. Its primary objective is to enable seamless communication between <strong>Modbus-based energy meters</strong> (typically using the Modbus RTU protocol over serial interfaces such as RS485) and <strong>cloud platforms</strong> or <strong>local monitoring systems</strong> via <strong>MQTT</strong>.</p>
+<p>The plugin serves as a middleware layer, bridging industrial field devices with modern IoT communication protocols. It enables real-time energy data collection, monitoring, and remote analytics.</p>
+<a class="reference internal image-reference" href="_images/tedge_EM_BD.jpeg"><img alt="Project Block Diagram" class="align-center" src="_images/tedge_EM_BD.jpeg" style="width: 1500px; height: 700px;" /></a>
+<p><strong>Key Features</strong></p>
+<ul class="simple">
+<li><p><strong>Modbus RTU Support</strong>: Communicates with Modbus RTU meters over serial interfaces.</p></li>
+<li><p><strong>MQTT Integration</strong>: Publishes data to MQTT brokers such as Mosquitto or AWS IoT.</p></li>
+<li><p><strong>Flexible Configuration</strong>: Supports configurable register maps, baud rates, and topics.</p></li>
+<li><p><strong>Data Transformation</strong>: Converts Modbus registers into human-readable values.</p></li>
+<li><p><strong>Cloud and Edge Compatibility</strong>: Works with both local and cloud monitoring systems.</p></li>
+<li><p><strong>Logging and Debugging</strong>: Includes built-in logging for diagnostics and development.</p></li>
+</ul>
+<p><strong>How It Works</strong></p>
+<ol class="arabic">
+<li><p><strong>Serial Communication Initialization</strong>
+Establishes a connection to Modbus devices via serial ports (e.g., RS485).</p></li>
+<li><p><strong>Data Acquisition</strong>
+Sends Modbus queries to read energy-related registers, including:</p>
+<ul class="simple">
+<li><p>Voltage (V)</p></li>
+<li><p>Current (A)</p></li>
+<li><p>Power (kW/kWh)</p></li>
+<li><p>Power Factor</p></li>
+<li><p>Frequency (Hz)</p></li>
+<li><p>Active Power (W)</p></li>
+<li><p>Apparent Power (VA)</p></li>
+</ul>
+</li>
+<li><p><strong>Data Processing</strong>
+Parses and scales raw register values based on the meter’s specification.</p></li>
+<li><p><strong>MQTT Publishing</strong>
+Sends processed data to an MQTT broker under structured topics:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">energy</span><span class="o">/&lt;</span><span class="n">device_id</span><span class="o">&gt;/</span><span class="n">voltage</span>
+<span class="o">/</span><span class="n">energy</span><span class="o">/&lt;</span><span class="n">device_id</span><span class="o">&gt;/</span><span class="n">power</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Monitoring &amp; Analytics</strong>
+MQTT messages are consumed by cloud or local systems for display, storage, or analysis.</p></li>
+</ol>
+</section>
+<section id="project-architecture">
+<h2>Project Architecture<a class="headerlink" href="#project-architecture" title="Permalink to this heading"></a></h2>
+<p>This section provides an overview of the architecture of the Modbus Smart Energy Meter, illustrating how it integrates with Modbus devices and MQTT brokers.
+The architecture consists of several key components that work together to enable efficient data collection and transmission:</p>
+<a class="reference internal image-reference" href="_images/project_arch.png"><img alt="Project architecture image" class="align-center" src="_images/project_arch.png" style="width: 1500px;" /></a>
+<br><br><br></section>
+<section id="technical-stack">
+<h2>Technical Stack<a class="headerlink" href="#technical-stack" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Technology Used</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Programming Lang</p></td>
+<td><p>Python / Rust / C++</p></td>
+</tr>
+<tr class="row-odd"><td><p>Communication</p></td>
+<td><p>Modbus RTU over RS485 serial</p></td>
+</tr>
+<tr class="row-even"><td><p>Messaging</p></td>
+<td><p>MQTT</p></td>
+</tr>
+<tr class="row-odd"><td><p>Config Format</p></td>
+<td><p>JSON / YAML / TOML</p></td>
+</tr>
+<tr class="row-even"><td><p>Logging</p></td>
+<td><p>Syslog / File-based</p></td>
+</tr>
+<tr class="row-odd"><td><p>Deployment</p></td>
+<td><p>systemd service / Docker container</p></td>
+</tr>
+<tr class="row-even"><td><p>OS Compatibility</p></td>
+<td><p>Debian / Ubuntu / OpenWRT</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Security Considerations</strong></p>
+<ul class="simple">
+<li><p>TLS/SSL encryption for MQTT</p></li>
+<li><p>MQTT authentication (username/password or certificates)</p></li>
+<li><p>Serial access controlled by system permissions</p></li>
+</ul>
+<p><strong>Use Cases</strong></p>
+<ul class="simple">
+<li><p>Real-time monitoring in industrial settings</p></li>
+<li><p>Integration with cloud energy platforms</p></li>
+<li><p>Energy logging for audit or compliance</p></li>
+<li><p>Anomaly detection and optimization</p></li>
+</ul>
+<p><strong>Testing &amp; Validation</strong></p>
+<ul class="simple">
+<li><p><strong>Simulators</strong>: ModRSsim2, ModbusPal</p></li>
+<li><p><strong>Hardware</strong>: Tested with Schneider, Secure, Selec, etc.</p></li>
+<li><p><strong>Tools</strong>: MQTT.fx, Mosquitto CLI for MQTT debugging</p></li>
+</ul>
+<p><strong>Future Enhancements</strong></p>
+<ul class="simple">
+<li><p>Modbus TCP support</p></li>
+<li><p>Device auto-discovery</p></li>
+<li><p>OTA update integration</p></li>
+<li><p>OPC-UA or REST API bridge</p></li>
+<li><p>Web-based configuration UI</p></li>
+</ul>
+</section>
+<section id="device-connection">
+<span id="id1"></span><h2>Device connection<a class="headerlink" href="#device-connection" title="Permalink to this heading"></a></h2>
+<p>This section describes how the PHYTedge Modbus Plugin connects to energy meters and other devices using Modbus RTU over RS485, and how it integrates with MQTT for data transmission.
+The plugin establishes a serial connection to the Modbus devices, reads energy-related registers, processes the data, and publishes it to an MQTT broker for further consumption.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently, we are not able to connect the Panel energy meter directly to the Tauri-L using RS485.
+Therefore, we have used an RS485 to TTL converter, and connected the TTL output to the USB port of the Tauri-L.</p>
+</div>
+<a class="reference internal image-reference" href="_images/Connection.jpeg"><img alt="Project architecture image" class="align-center" src="_images/Connection.jpeg" style="width: 1500px;" /></a>
+<br><br><br></section>
+<section id="source-code-brief">
+<h2>Source Code Brief<a class="headerlink" href="#source-code-brief" title="Permalink to this heading"></a></h2>
+<p>The following table summarizes the key components of the source code:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>File/Directory</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Modbus_plugin/</p></td>
+<td><p>Contains <cite>app.py</cite> which manages register mapping and
+publishes data (measurements, alarms, events) to cloud.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Docker-compose.yml</p></td>
+<td><p>Defines how to launch services using Docker Compose.</p></td>
+</tr>
+<tr class="row-even"><td><p>Dockerfile</p></td>
+<td><p>Instructions to build the Docker image.</p></td>
+</tr>
+<tr class="row-odd"><td><p>main.py</p></td>
+<td><p>Entry point of the application that starts the plugin.</p></td>
+</tr>
+<tr class="row-even"><td><p>modbus_plugin.service</p></td>
+<td><p>(Optional) <cite>systemd</cite> file to run app as background service.</p></td>
+</tr>
+<tr class="row-odd"><td><p>requirements.txt</p></td>
+<td><p>Lists Python dependencies for the application.</p></td>
+</tr>
+<tr class="row-even"><td><p>docker_install.sh</p></td>
+<td><p>Docker installation script on the device.</p></td>
+</tr>
+<tr class="row-odd"><td><p>tedge_install.sh</p></td>
+<td><p>Thin-Edge installation script on the device.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="getting-started-with-thin-edge">
+<h2>Getting started with Thin-edge<a class="headerlink" href="#getting-started-with-thin-edge" title="Permalink to this heading"></a></h2>
+<p>This section describes how to run the PHYTEC Edge Modbus Python application
+and connect it to ThingsBoard using Thin-edge on the i.MX8MM Tauri-L platform.</p>
+<p><strong>Prerequisites</strong></p>
+<p>Ensure the following before running the application:</p>
+<ul class="simple">
+<li><p>Thin-edge is properly installed and configured.</p></li>
+<li><p>Device certificates are provisioned.</p></li>
+<li><p>Network connectivity is available.</p></li>
+<li><p>Python3 runtime and required dependencies are installed.</p></li>
+</ul>
+<p><strong>Application Location</strong></p>
+<p>The Python application source is installed under:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">phytedge</span><span class="o">-</span><span class="n">modbus</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>To verify the installation, execute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="nd">@phygate</span><span class="o">-</span><span class="n">tauri</span><span class="o">-</span><span class="n">l</span><span class="o">-</span><span class="n">imx8mm</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="o">~</span><span class="c1"># cd /usr/share/</span>
+<span class="n">root</span><span class="nd">@phygate</span><span class="o">-</span><span class="n">tauri</span><span class="o">-</span><span class="n">l</span><span class="o">-</span><span class="n">imx8mm</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">share</span><span class="c1"># ls</span>
+</pre></div>
+</div>
+<p>You should see the directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">phytedge</span><span class="o">-</span><span class="n">modbus</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Navigate into the application directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="nd">@phygate</span><span class="o">-</span><span class="n">tauri</span><span class="o">-</span><span class="n">l</span><span class="o">-</span><span class="n">imx8mm</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">share</span><span class="c1"># cd phytedge-modbus/</span>
+<span class="n">root</span><span class="nd">@phygate</span><span class="o">-</span><span class="n">tauri</span><span class="o">-</span><span class="n">l</span><span class="o">-</span><span class="n">imx8mm</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">phytedge</span><span class="o">-</span><span class="n">modbus</span><span class="c1"># ls</span>
+</pre></div>
+</div>
+<p>The directory contains the following files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">modbus_plugin</span><span class="o">/</span>
+<span class="n">Dockerfile</span>
+<span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">.</span><span class="n">yml</span>
+<span class="n">entrypoint</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">tests</span><span class="o">/</span>
+<span class="n">README</span><span class="o">.</span><span class="n">md</span>
+<span class="n">docker_install</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">log</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">modbus_plugin</span><span class="o">.</span><span class="n">service</span>
+<span class="n">tedge_install</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p><strong>Running the Application</strong></p>
+<p>To start the Python application manually, execute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="nd">@phygate</span><span class="o">-</span><span class="n">tauri</span><span class="o">-</span><span class="n">l</span><span class="o">-</span><span class="n">imx8mm</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">phytedge</span><span class="o">-</span><span class="n">modbus</span><span class="c1"># python3 main.py</span>
+</pre></div>
+</div>
+<p>The application will initialize the Modbus plugin and establish
+communication with ThingsBoard through Thin-edge.</p>
+<p>Logs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="nd">@phygate</span><span class="o">-</span><span class="n">tauri</span><span class="o">-</span><span class="n">l</span><span class="o">-</span><span class="n">imx8mm</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">phytedge</span><span class="o">-</span><span class="n">modbus</span><span class="c1"># ls</span>
+<span class="n">modbus_plugin</span><span class="o">/</span>  <span class="n">Dockerfile</span>  <span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">.</span><span class="n">yml</span>  <span class="n">entrypoint</span><span class="o">.</span><span class="n">sh</span>  <span class="n">main</span><span class="o">.</span><span class="n">py</span>                <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">tests</span><span class="o">/</span>          <span class="n">README</span><span class="o">.</span><span class="n">md</span>   <span class="n">docker_install</span><span class="o">.</span><span class="n">sh</span>   <span class="n">log</span><span class="o">.</span><span class="n">txt</span>        <span class="n">modbus_plugin</span><span class="o">.</span><span class="n">service</span>  <span class="n">tedge_install</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">root</span><span class="nd">@phygate</span><span class="o">-</span><span class="n">tauri</span><span class="o">-</span><span class="n">l</span><span class="o">-</span><span class="n">imx8mm</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">phytedge</span><span class="o">-</span><span class="n">modbus</span><span class="c1"># python3 main.py</span>
+<span class="n">Connected</span> <span class="n">to</span> <span class="n">Modbus</span> <span class="n">device</span> <span class="n">SDM230</span><span class="o">.</span> <span class="n">Press</span> <span class="n">Ctrl</span><span class="o">+</span><span class="n">C</span> <span class="n">to</span> <span class="n">stop</span><span class="o">.</span>
+<span class="n">Event</span> <span class="n">Sent</span><span class="p">:</span> <span class="n">Device</span> <span class="ow">is</span> <span class="n">online</span>
+<span class="n">Sent</span> <span class="n">Voltage</span><span class="p">:</span> <span class="mf">228.348</span>
+<span class="n">Sent</span> <span class="n">Current</span><span class="p">:</span> <span class="mf">0.000</span>
+<span class="n">Sent</span> <span class="n">Frequency</span><span class="p">:</span> <span class="mf">50.000</span>
+<span class="n">Sent</span> <span class="n">Active</span> <span class="n">Power</span><span class="p">:</span> <span class="mf">0.000</span>
+<span class="n">Sent</span> <span class="n">Apparent</span> <span class="n">Power</span><span class="p">:</span> <span class="mf">0.000</span>
+<span class="n">Sent</span> <span class="n">Power</span> <span class="n">Factor</span><span class="p">:</span> <span class="mf">1.000</span>
+<span class="n">Sent</span> <span class="n">Energy</span><span class="p">:</span> <span class="mf">0.002</span>
+<span class="n">Sent</span> <span class="n">Voltage</span><span class="p">:</span> <span class="mf">228.124</span>
+<span class="n">Sent</span> <span class="n">Current</span><span class="p">:</span> <span class="mf">0.000</span>
+</pre></div>
+</div>
+</section>
+<section id="energy-meter-device-selection">
+<span id="id2"></span><h2>Energy Meter Device Selection<a class="headerlink" href="#energy-meter-device-selection" title="Permalink to this heading"></a></h2>
+<p>Right now we are using the Selec MFM3833A energy meter and SDM230-MODBUS-MID V2 energy meter, which is a Modbus RTU device. The device is connected to the Tauri-L gateway via RS485.</p>
+<p>The Selec MFM3833A energy meter and SDM230-MODBUS-MID V2 energy meter follows different Modbus registers for reading the energy meter data.</p>
+<p>The following table summarizes the Modbus registers for both devices:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Register</p></th>
+<th class="head"><p>Selec MFM3833A</p></th>
+<th class="head"><p>Byte Format (MFM3833A)</p></th>
+<th class="head"><p>SDM230-MODBUS-MID V2</p></th>
+<th class="head"><p>Byte Format (SDM230)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Voltage</p></td>
+<td><p>8</p></td>
+<td><p>MSB</p></td>
+<td><p>0</p></td>
+<td><p>MSB</p></td>
+</tr>
+<tr class="row-odd"><td><p>Current</p></td>
+<td><p>15</p></td>
+<td><p>LSB</p></td>
+<td><p>6</p></td>
+<td><p>MSB</p></td>
+</tr>
+<tr class="row-even"><td><p>Frequency</p></td>
+<td><p>55</p></td>
+<td><p>LSB</p></td>
+<td><p>70</p></td>
+<td><p>MSB</p></td>
+</tr>
+<tr class="row-odd"><td><p>Active Power</p></td>
+<td><p>23</p></td>
+<td><p>LSB</p></td>
+<td><p>12</p></td>
+<td><p>MSB</p></td>
+</tr>
+<tr class="row-even"><td><p>Apparent Power</p></td>
+<td><p>29</p></td>
+<td><p>LSB</p></td>
+<td><p>18</p></td>
+<td><p>MSB</p></td>
+</tr>
+<tr class="row-odd"><td><p>Power Factor</p></td>
+<td><p>47</p></td>
+<td><p>LSB</p></td>
+<td><p>30</p></td>
+<td><p>MSB</p></td>
+</tr>
+<tr class="row-even"><td><p>Energy</p></td>
+<td><p>57</p></td>
+<td><p>LSB</p></td>
+<td><p>342</p></td>
+<td><p>MSB</p></td>
+</tr>
+</tbody>
+</table>
+<p>The following table lists the measurement topics for Cumulocity, AWS, and Thingsboard:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Platform</p></th>
+<th class="head"><p>Measurement Topic</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Cumulocity</p></td>
+<td><p>te/device/main///m/environment</p></td>
+</tr>
+<tr class="row-odd"><td><p>AWS</p></td>
+<td><p>aws/td/SelecMFM383A</p></td>
+</tr>
+<tr class="row-even"><td><p>Thingsboard</p></td>
+<td><p>v1/devices/me/SEMtelemetry</p></td>
+</tr>
+</tbody>
+</table>
+<p>The code changes as follows:</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Change the <strong>DEVICE_CONFIG</strong> variable to match your energy meter device.</p></li>
+<li><p>Parameters like <strong>name</strong>, <strong>port</strong>, <strong>baudrate</strong>, <strong>measurement_topic</strong>, <strong>address</strong> and <strong>byte_order</strong> should be set according to your device specifications.</p></li>
+</ol>
+<blockquote>
+<div><a class="reference internal image-reference" href="_images/code-changes-main.png"><img alt="AWS IoT Core Subscribe to Topic" class="align-center" src="_images/code-changes-main.png" style="width: 1000px;" /></a>
+<br></div></blockquote>
+</div></blockquote>
+</section>
+<section id="connecting-to-cumulocity">
+<h2>Connecting to Cumulocity<a class="headerlink" href="#connecting-to-cumulocity" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Start your free trial <a class="reference external" href="https://www.cumulocity.com/start-your-journey/free-trial/">here</a>.</p></li>
+</ol>
+<br><ol class="arabic simple" start="2">
+<li><p>Register and create a tenant account.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/reg_user.png"><img alt="Cumulocity Registration" class="align-center" src="_images/reg_user.png" style="width: 1000px;" /></a>
+<br><ol class="arabic simple" start="3">
+<li><p>You will receive an email containing your tenant name and a one-time credential.</p></li>
+</ol>
+<br><ol class="arabic simple" start="4">
+<li><p>Click on <strong>Login</strong> in the email you received and enter the credentials provided.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/otp_instance.png"><img alt="Cumulocity OTP Instance" class="align-center" src="_images/otp_instance.png" style="width: 1000px;" /></a>
+<br><ol class="arabic simple" start="5">
+<li><p>After logging in with your username and one-time password, you will be prompted to set a permanent password.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/permanent_pass.png"><img alt="Cumulocity Permanent Password" class="align-center" src="_images/permanent_pass.png" style="width: 1000px;" /></a>
+<br><ol class="arabic simple" start="6">
+<li><p>After setting your permanent password, you will be asked to log in again with your username and the new password. You will then be redirected to the Cumulocity dashboard.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/cumulocity_dashboard.png"><img alt="Cumulocity Dashboard" class="align-center" src="_images/cumulocity_dashboard.png" style="width: 1000px;" /></a>
+<br><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Pre-requisite</strong>: You need to have the Cumulocity CLI installed on your local system (TAURI-L) to connect to the Cumulocity tenant.
+You can get the <strong>Cumulocity IoT URL</strong> and <strong>Cumulocity IoT User</strong> from the Cumulocity dashboard.</p>
+<ul class="simple">
+<li><p><strong>Device ID</strong> (Your preferred device ID name)</p></li>
+<li><p><strong>Cumulocity IoT URL</strong> (e.g., example.eu-latest.com)</p></li>
+<li><p><strong>Cumulocity IoT User</strong> (Your username for the Cumulocity tenant)</p></li>
+</ul>
+</div>
+<br><ol class="arabic" start="7">
+<li><p>Open the TAURI-L terminal and execute the following commands to install the Cumulocity CLI.</p>
+<ol class="loweralpha simple">
+<li><p>Set the URL of your Cumulocity tenant.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/c8y_url_selection.png"><img alt="AWS IoT Core MQTT Test Client" class="align-center" src="_images/c8y_url_selection.png" style="width: 1000px;" /></a>
+<br><a class="reference internal image-reference" href="_images/c8y_url.png"><img alt="AWS IoT Core MQTT Test Client" class="align-center" src="_images/c8y_url.png" style="width: 1000px;" /></a>
+<br><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>c8y.url<span class="w"> </span>&lt;replace<span class="w"> </span>with<span class="w"> </span>your<span class="w"> </span>tenantDomainName&gt;
+</pre></div>
+</div>
+<ol class="loweralpha simple" start="2">
+<li><p>Set the path to the root certificate if necessary. The default is /etc/ssl/certs.</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>c8y.root_cert_path<span class="w"> </span>/etc/ssl/certs/ca-certificates.crt
+</pre></div>
+</div>
+<ol class="loweralpha simple" start="3">
+<li><p>Create certificate and key files for the Cumulocity tenant.</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tedge<span class="w"> </span>cert<span class="w"> </span>remove
+sudo<span class="w"> </span>tedge<span class="w"> </span>cert<span class="w"> </span>create<span class="w"> </span>--device-id<span class="w"> </span><span class="s2">&quot;your device ID&quot;</span>
+</pre></div>
+</div>
+<ol class="loweralpha simple" start="4">
+<li><p>Upload the certificate to Cumulocity.</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tedge<span class="w"> </span>cert<span class="w"> </span>upload<span class="w"> </span>c8y<span class="w"> </span>--user<span class="w"> </span><span class="s2">&quot;your username&quot;</span><span class="w"> </span>--password<span class="w"> </span><span class="s2">&quot;your password&quot;</span>
+</pre></div>
+</div>
+<ol class="loweralpha simple" start="5">
+<li><p>Finally, run the following command to connect to Cumulocity.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you have tried to connect your device to the Thingsboard, before trying to connect with AWS, you have to follow the below commands, to unset Thingsboard.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>mqtt.client.host<span class="w"> </span>localhost
+sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>mqtt.port<span class="w"> </span><span class="m">8883</span>
+sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>mqtt.client.auth.cafile
+sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>mqtt.client.auth.certfile
+sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>mqtt.client.auth.keyfile
+</pre></div>
+</div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tedge<span class="w"> </span>connect<span class="w"> </span>c8y
+</pre></div>
+</div>
+</li>
+</ol>
+<br><ol class="arabic" start="8">
+<li><p>After registering your device with Cumulocity, navigate to the Cumulocity dashboard and click on <strong>Application switcher</strong> in the top right corner.</p>
+<a class="reference internal image-reference" href="_images/app_switch.png"><img alt="Cumulocity Application Switcher" class="align-center" src="_images/app_switch.png" style="width: 1000px;" /></a>
+</li>
+</ol>
+<br><ol class="arabic" start="9">
+<li><p>Select <strong>Device Management</strong> from the dropdown menu to be redirected to the Device Management dashboard.</p>
+<a class="reference internal image-reference" href="_images/device_management.png"><img alt="Cumulocity Device Management" class="align-center" src="_images/device_management.png" style="width: 1000px;" /></a>
+</li>
+</ol>
+<br><ol class="arabic simple" start="10">
+<li><p>In the Device Management dashboard, click on <strong>All devices</strong> to view your registered device.</p></li>
+</ol>
+<blockquote>
+<div><a class="reference internal image-reference" href="_images/reg_device.png"><img alt="Cumulocity All Devices" class="align-center" src="_images/reg_device.png" style="width: 1000px;" /></a>
+</div></blockquote>
+<br><ol class="arabic simple" start="11">
+<li><p>Refer to <a class="reference internal" href="#device-connection"><span class="std std-ref">Device connection</span></a> for instructions on making the physical connection of the Selec MFM383A Panel Energy Meter to the Tedge device (TAURI-L) using an RS485 to USB converter.</p></li>
+</ol>
+<br><ol class="arabic simple" start="12">
+<li><p>Execute the source code on the device to start sending meter data to Cumulocity.</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For Cumulocity cloud open the path of the project <strong>PHYTedge-Modbus-Plugin/modbus_plugin/app.py</strong>
+and change the <strong>port</strong> to ‘your_device_port’ and configuration <strong>DEVICE_CONFIG</strong>
+and change the ‘measurement_topic’ to:
+<strong>te/device/main///m/environment</strong></p>
+<p>For Energy meter selection please refer to <a class="reference internal" href="#energy-meter-device-selection"><span class="std std-ref">Energy Meter Device Selection</span></a>.</p>
+</div>
+</div></blockquote>
+<br><ol class="arabic simple" start="13">
+<li><p>After running the source code, you will be able to see the Energy Meter data in the Cumulocity Device ID.</p>
+<ol class="loweralpha simple">
+<li><p>Click on the device ID to be redirected to your device ID dashboard.</p></li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<div><a class="reference internal image-reference" href="_images/device_dashboard.png"><img alt="Cumulocity Device ID Dashboard" class="align-center" src="_images/device_dashboard.png" style="width: 1000px;" /></a>
+  <br>
+
+b. Click on **Measurements** in the left sidebar to view the energy meter data.<p><strong>Voltage</strong></p>
+<a class="reference internal image-reference" href="_images/voltage.png"><img alt="Cumulocity Measurements" class="align-center" src="_images/voltage.png" style="width: 1000px;" /></a>
+<p><strong>Current</strong></p>
+<a class="reference internal image-reference" href="_images/current.png"><img alt="Cumulocity Current" class="align-center" src="_images/current.png" style="width: 1000px;" /></a>
+<p><strong>Energy</strong></p>
+<a class="reference internal image-reference" href="_images/energy.png"><img alt="Cumulocity Energy" class="align-center" src="_images/energy.png" style="width: 1000px;" /></a>
+<p><strong>Frequency</strong></p>
+<a class="reference internal image-reference" href="_images/frequency.png"><img alt="Cumulocity Frequency" class="align-center" src="_images/frequency.png" style="width: 1000px;" /></a>
+<p><strong>Power Factor</strong></p>
+<a class="reference internal image-reference" href="_images/pf.png"><img alt="Cumulocity Power Factor" class="align-center" src="_images/pf.png" style="width: 1000px;" /></a>
+<p><strong>Apparent Power</strong></p>
+<a class="reference internal image-reference" href="_images/ap.png"><img alt="Cumulocity Apparent Power" class="align-center" src="_images/ap.png" style="width: 1000px;" /></a>
+<p><strong>Active Power</strong></p>
+<a class="reference internal image-reference" href="_images/activeP.png"><img alt="Cumulocity Active Power" class="align-center" src="_images/activeP.png" style="width: 1000px;" /></a>
+</div></blockquote>
+<br><br><br></section>
+<section id="connecting-to-aws">
+<h2>Connecting to AWS<a class="headerlink" href="#connecting-to-aws" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Create an AWS account if you don’t have one already by visiting <a class="reference external" href="https://aws.amazon.com/free/">AWS Free Tier</a>.</p></li>
+<li><p>After creating your account, log in to the AWS Management Console.</p></li>
+<li><p>Navigate to the search bar and type IoT Core.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/aws_iot_core.png"><img alt="AWS IoT Core" class="align-center" src="_images/aws_iot_core.png" style="width: 1000px;" /></a>
+<br><ol class="arabic simple" start="4">
+<li><p>Get the aws IoT core URL to set in the Thin-edge configuration.</p></li>
+<li><p>Click on <strong>View domain configuration</strong></p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/aws-domain.png"><img alt="AWS IoT Core Settings" class="align-center" src="_images/aws-domain.png" style="width: 1000px;" /></a>
+<br><a class="reference internal image-reference" href="_images/aws-domain-name.png"><img alt="AWS IoT Core Settings" class="align-center" src="_images/aws-domain-name.png" style="width: 1000px;" /></a>
+<br><ol class="arabic" start="6">
+<li><p>Open the TAURI-L terminal and execute the following commands to install the AWS CLI.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <strong>Device ID</strong> can be chosen by the user; however, it must remain consistent across all communications and operations to ensure proper identification and tracking.</p>
+</div>
+<ol class="loweralpha simple">
+<li><p>Set the URL of your AWS IoT Core.</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>aws.url<span class="w"> </span><span class="s2">&quot;your-aws-iot Domain Name&quot;</span>
+</pre></div>
+</div>
+<ol class="loweralpha simple" start="2">
+<li><p>Create certificate and key files for AWS IoT Core.</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tedge<span class="w"> </span>cert<span class="w"> </span>remove
+sudo<span class="w"> </span>tedge<span class="w"> </span>cert<span class="w"> </span>create<span class="w"> </span>--device-id<span class="w"> </span><span class="s2">&quot;your device ID&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Navigate to the <strong>Security</strong> section in the AWS IoT Core console sidebar and click on <strong>Policies</strong> and click on <strong>Create policy</strong>.</p>
+<blockquote>
+<div><a class="reference internal image-reference" href="_images/create-policy.png"><img alt="AWS IoT Core Policies" class="align-center" src="_images/create-policy.png" style="width: 1000px;" /></a>
+</div></blockquote>
+</li>
+</ol>
+<br><ol class="arabic" start="8">
+<li><p>Click on <strong>json</strong> and paste the below policy and then click on <strong>create</strong>.</p>
+<blockquote>
+<div><a class="reference internal image-reference" href="_images/json-policy.png"><img alt="AWS IoT Core Json Policies" class="align-center" src="_images/json-policy.png" style="width: 1000px;" /></a>
+</div></blockquote>
+</li>
+</ol>
+<br><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Statement&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iot:Connect&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:client/${iot:Connection.Thing.ThingName}&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iot:Subscribe&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topicfilter/thinedge/${iot:Connection.Thing.ThingName}/cmd/#&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/shadow/#&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topicfilter/thinedge/devices/${iot:Connection.Thing.ThingName}/test-connection&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iot:Receive&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topic/thinedge/${iot:Connection.Thing.ThingName}/cmd&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topic/thinedge/${iot:Connection.Thing.ThingName}/cmd/*&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topic/$aws/things/${iot:Connection.Thing.ThingName}/shadow&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topic/$aws/things/${iot:Connection.Thing.ThingName}/shadow/*&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topic/thinedge/devices/${iot:Connection.Thing.ThingName}/test-connection&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iot:Publish&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topic/thinedge/${iot:Connection.Thing.ThingName}/td&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topic/thinedge/${iot:Connection.Thing.ThingName}/td/*&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topic/$aws/things/${iot:Connection.Thing.ThingName}/shadow&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topic/$aws/things/${iot:Connection.Thing.ThingName}/shadow/*&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:iot:ap-southeast-2:825010217716:topic/thinedge/devices/${iot:Connection.Thing.ThingName}/test-connection&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic" start="9">
+<li><p>Register a Device (thing)</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Navigate to the <strong>Manage</strong> section in the AWS IoT Core console sidebar.</p></li>
+<li><p>Click on <strong>All devices</strong> and select <strong>Things</strong>.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/aws-create-thing.png"><img alt="AWS IoT Core Create Thing" class="align-center" src="_images/aws-create-thing.png" style="width: 1000px;" /></a>
+<br><ol class="loweralpha simple" start="3">
+<li><p>Click on <strong>Create things</strong> and then select <strong>Create single thing</strong> and then click <strong>Next</strong>.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/create-thing.png"><img alt="AWS IoT Core Thing Create" class="align-center" src="_images/create-thing.png" style="width: 1000px;" /></a>
+<br><a class="reference internal image-reference" href="_images/single-thing.png"><img alt="AWS IoT Core Single Thing Create" class="align-center" src="_images/single-thing.png" style="width: 1000px;" /></a>
+<br><ol class="loweralpha simple" start="4">
+<li><p>Enter the device name (your device ID), select <strong>Unnamed shadow (classic)</strong> and click on <strong>Next</strong>.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/create-device.png"><img alt="AWS IoT Core Device Name" class="align-center" src="_images/create-device.png" style="width: 1000px;" /></a>
+<br><ol class="loweralpha simple" start="5">
+<li><p>On the device certificate page, choose <strong>Use my certificate → CA is not registered with AWS IoT</strong></p></li>
+<li><p>Click on <strong>Choose file</strong> under <strong>Certificate</strong> and select your <strong>tedge-certificate.pem</strong> file, and then click on <strong>Open → Next</strong>.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/device-cert.png"><img alt="AWS IoT Core Device Name" class="align-center" src="_images/device-cert.png" style="width: 1000px;" /></a>
+<br><ol class="loweralpha simple" start="7">
+<li><p>Select the policy you created earlier and click on <strong>Create thing</strong>.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/thing-policy.png"><img alt="AWS IoT Core Thing Policy" class="align-center" src="_images/thing-policy.png" style="width: 1000px;" /></a>
+<br></div></blockquote>
+</li>
+<li><p>Head over to your TAURI-L terminal and connect your device to AWS IoT Core by running the following command:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you have tried to connect your device to the Thingsboard, before trying to connecting with AWS, you have to follow the below commands, to unset Thingsboard.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>mqtt.client.host<span class="w"> </span>localhost
+sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>mqtt.port<span class="w"> </span><span class="m">8883</span>
+sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>mqtt.client.auth.cafile
+sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>mqtt.client.auth.certfile
+sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>mqtt.client.auth.keyfile
+</pre></div>
+</div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tedge<span class="w"> </span>connect<span class="w"> </span>aws
+</pre></div>
+</div>
+</li>
+<li><p>Go to the AWS IoT core and select your thing and click on <strong>Activity</strong> and then click on <strong>MQTT test client</strong>.</p>
+<a class="reference internal image-reference" href="_images/connect_client.png"><img alt="AWS IoT Core MQTT Test Client" class="align-center" src="_images/connect_client.png" style="width: 1000px;" /></a>
+<br></li>
+<li><p>Click on <strong>Topic Filter</strong> and enter the topic <strong>thinedge/&lt;your-device-id&gt;/#</strong> and click on <strong>Subscribe to topic</strong>.</p>
+<a class="reference internal image-reference" href="_images/aws-subscribe.png"><img alt="AWS IoT Core Subscribe to Topic" class="align-center" src="_images/aws-subscribe.png" style="width: 1000px;" /></a>
+<br></li>
+<li><p>Execute the source code on the device to start sending meter data to AWS.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For AWS cloud open the path of the project <strong>PHYTedge-Modbus-Plugin/modbus_plugin/app.py</strong>
+and change the <strong>port</strong> to ‘your_device_port’ and configuration <strong>DEVICE_CONFIG</strong>
+and change the ‘measurement_topic’ to:
+<strong>aws/td/&lt;Use your prefered topic&gt;</strong></p>
+<p>For Energy meter selection please refer to <a class="reference internal" href="#energy-meter-device-selection"><span class="std std-ref">Energy Meter Device Selection</span></a>.</p>
+<ul class="simple">
+<li><p>And then execute the source code on the device.</p></li>
+</ul>
+<br><a class="reference internal image-reference" href="_images/code-change.png"><img alt="Software Code Change for AWS" class="align-center" src="_images/code-change.png" style="width: 1500px;" /></a>
+<br></div>
+<ol class="arabic" start="14">
+<li><p>Head over to the AWS IoT Core MQTT test client and you should see the data being published to the topic <strong>aws/td/#</strong>.</p>
+<a class="reference internal image-reference" href="_images/aws-output.png"><img alt="AWS IoT Core Data" class="align-center" src="_images/aws-output.png" style="width: 1000px;" /></a>
+<br></li>
+</ol>
+</section>
+<section id="connecting-to-thingsboard">
+<h2>Connecting to Thingsboard<a class="headerlink" href="#connecting-to-thingsboard" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Head over to the TAURI-L terminal and execute the following commands to install the Thingsboard CLI.</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Copy the ca.pem and ca_key.pem of the server to the client device.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>ca certificates will only be provided by the PHYTEC India Thingsboard server admin.</p>
+</div>
+<ol class="loweralpha simple" start="2">
+<li><p>Create a csr file for the client device</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tedge<span class="w"> </span>cert<span class="w"> </span>remove
+sudo<span class="w"> </span>tedge<span class="w"> </span>cert<span class="w"> </span>create-csr<span class="w"> </span>--device-id<span class="w"> </span><span class="s2">&quot;Tauri-L_GW&quot;</span>
+</pre></div>
+</div>
+<ol class="loweralpha simple" start="3">
+<li><p>Sign the certificate with the csr file</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>openssl<span class="w"> </span>x509<span class="w"> </span>-req<span class="w"> </span>-in<span class="w"> </span>tedge.csr<span class="w"> </span>-CA<span class="w"> </span>ca.pem<span class="w"> </span>-CAkey<span class="w"> </span>ca_key.pem<span class="w">   </span>-CAcreateserial<span class="w"> </span>-out<span class="w"> </span>tedge-certificate.pem<span class="w"> </span>-days<span class="w"> </span><span class="m">365</span><span class="w"> </span>-sha256
+</pre></div>
+</div>
+<ol class="loweralpha simple" start="4">
+<li><p>Set the Thingsboard URL.</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>mqtt.client.host<span class="w"> </span><span class="m">108</span>.181.190.31
+sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>mqtt.port<span class="w"> </span><span class="m">8883</span>
+sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>mqtt.client.auth.cafile<span class="w"> </span>&lt;ca<span class="w"> </span>file<span class="w"> </span>path&gt;
+sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>mqtt.client.auth.certfile<span class="w"> </span>&lt;cert<span class="w"> </span>file<span class="w"> </span>path&gt;
+sudo<span class="w"> </span>tedge<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>mqtt.client.auth.keyfile<span class="w"> </span>&lt;key<span class="w"> </span>file<span class="w"> </span>path&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>You can access thingsboard by visiting <a class="reference external" href="http://108.181.190.31:8080/">Thingsboard</a>.</p></li>
+<li><p>For username use: <strong>..</strong> and for password use: <strong>..</strong> and click on <strong>Sign In</strong>.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The username and password are provided by the PHYTEC India Thingsboard server admin.</p>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>After signing in, you will be redirected to the Thingsboard dashboard.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/tb_dashboard.png"><img alt="TB Dashboard" class="align-center" src="_images/tb_dashboard.png" style="width: 1000px;" /></a>
+<br><ol class="arabic simple" start="5">
+<li><p>Click on <strong>Profiles</strong> in the left sidebar and then click on <strong>Device profiles</strong>.</p></li>
+<li><p>Click on <strong>+</strong> and select <strong>Create new device profile</strong>.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/tb_add_profile.png"><img alt="TB add profile" class="align-center" src="_images/tb_add_profile.png" style="width: 1000px;" /></a>
+<br><ol class="arabic simple" start="7">
+<li><p>Fill the name as <strong>Tauri-L_GW</strong>, and in the default rule chain select <strong>Root Rule Chain</strong>. Then click on <strong>Transport configuration</strong> and select Transport type as <strong>MQTT</strong>.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/tb_device_profile.png"><img alt="TB Device Profile" class="align-center" src="_images/tb_device_profile.png" style="width: 1000px;" /></a>
+<br><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For the <strong>MQTT device topic filter</strong> select the <strong>Telemetry topic filter</strong> and change it to: <strong>v1/devices/me/SEMtelemetry</strong>.</p>
+</div>
+<a class="reference internal image-reference" href="_images/tb_transport_profile.png"><img alt="TB Transport Profile" class="align-center" src="_images/tb_transport_profile.png" style="width: 1000px;" /></a>
+<br><ol class="arabic simple" start="8">
+<li><p>Click on <strong>Devices</strong> in the left sidebar and then click on <strong>+</strong> to add a new device.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/tb_device.png"><img alt="TB Device" class="align-center" src="_images/tb_device.png" style="width: 1000px;" /></a>
+<br><ol class="arabic simple" start="9">
+<li><p>Fill the name as <strong>Tauri-L_GW</strong> and select the device profile created in step 6. Then click on <strong>Next: Credentials</strong>.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/tb_device_creation.png"><img alt="TB Device Creation" class="align-center" src="_images/tb_device_creation.png" style="width: 1000px;" /></a>
+<br><ol class="arabic" start="10">
+<li><p>In the credentials section, select <strong>X.509</strong> and paste your <strong>tedge-certificate.pem</strong> and click on <strong>Add</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can use cat command on your client device terminal and paste the certificate in the credentials section. Make sure you paste the certificate in the correct format.</p>
+<p>Paste your certificate in the following format (row-wise, as shown):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-----</span><span class="n">BEGIN</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+<span class="n">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn</span><span class="o">...</span>
+<span class="o">...</span>
+<span class="o">...</span>
+<span class="o">...</span>
+<span class="o">-----</span><span class="n">END</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+</pre></div>
+</div>
+</div>
+</li>
+</ol>
+<a class="reference internal image-reference" href="_images/tb_device_credentials.png"><img alt="TB Device Credentials" class="align-center" src="_images/tb_device_credentials.png" style="width: 1000px;" /></a>
+<br><ol class="arabic simple" start="11">
+<li><p>Now your device creation is ready to recieve data from the client device.</p></li>
+<li><p>Head over to the Tauri-L terminal and execute the source code on the device to start sending meter data to Thingsboard.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For Thingsboard cloud open the path of the project <strong>PHYTedge-Modbus-Plugin/modbus_plugin/app.py</strong>
+and change the <strong>port</strong> to ‘your_device_port’ and configuration <strong>DEVICE_CONFIG</strong>
+and change the ‘measurement_topic’ to:
+<strong>v1/devices/me/SEMtelemetry</strong></p>
+<p>For Energy meter selection please refer to <a class="reference internal" href="#energy-meter-device-selection"><span class="std std-ref">Energy Meter Device Selection</span></a>.</p>
+</div>
+<a class="reference internal image-reference" href="_images/tb_code_change.png"><img alt="Software Code Change for Thingsboard" class="align-center" src="_images/tb_code_change.png" style="width: 1000px;" /></a>
+<br><ol class="arabic" start="13">
+<li><p>Now after execution of the source code, you will be able to see the Energy Meter data in the Thingsboard Device <strong>Latest Telemetry</strong> section.</p>
+<a class="reference internal image-reference" href="_images/tb_device_output.png"><img alt="TB Device ID Dashboard" class="align-center" src="_images/tb_device_output.png" style="width: 1000px;" /></a>
+<br></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="yoctobsp.html" class="btn btn-neutral float-left" title="Integration of Thin-edge.io with Tauri-L i.MX8MM Yocto BSP" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="digital.html" class="btn btn-neutral float-right" title="Digital Twin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, PHYTEC INDIA.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
