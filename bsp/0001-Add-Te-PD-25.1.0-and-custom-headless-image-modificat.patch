@@ -1,0 +1,951 @@
+From 66428e0f37a5182c32eba799cc7d142971aa10a5 Mon Sep 17 00:00:00 2001
+From: Surendar <surendar.k@phytecembedded.in>
+Date: Sun, 22 Feb 2026 19:15:38 +0530
+Subject: [PATCH] Add Te-PD-25.1.0 and custom headless image modification for
+ Tauri-L
+
+---
+ .../files/PHYTedge-Modbus-Plugin/.gitignore   |   4 +
+ .../files/PHYTedge-Modbus-Plugin/Dockerfile   |  19 +++
+ .../files/PHYTedge-Modbus-Plugin/README.md    | 110 ++++++++++++++
+ .../PHYTedge-Modbus-Plugin/docker-compose.yml |  57 ++++++++
+ .../PHYTedge-Modbus-Plugin/docker_install.sh  |  50 +++++++
+ .../PHYTedge-Modbus-Plugin/entrypoint.sh      |  43 ++++++
+ .../files/PHYTedge-Modbus-Plugin/main.py      |   5 +
+ .../modbus_plugin.service                     |  15 ++
+ .../modbus_plugin/__init__.py                 |   1 +
+ .../modbus_plugin/app.py                      | 138 ++++++++++++++++++
+ .../PHYTedge-Modbus-Plugin/my/entrypoint.sh   |  43 ++++++
+ .../files/PHYTedge-Modbus-Plugin/my/main.py   |   5 +
+ .../my/modbus_plugin/__init__.py              |   1 +
+ .../my/modbus_plugin/app.py                   | 138 ++++++++++++++++++
+ .../my/tests/test_app.py                      |   8 +
+ .../my/tests/test_main.py                     |   8 +
+ .../PHYTedge-Modbus-Plugin/requirements.txt   |   3 +
+ .../PHYTedge-Modbus-Plugin/tedge_install.sh   |  25 ++++
+ .../PHYTedge-Modbus-Plugin/tests/test_app.py  |   8 +
+ .../PHYTedge-Modbus-Plugin/tests/test_main.py |   8 +
+ .../phytedge-modbus/phytedge-modbus_1.0.bb    |  22 +++
+ conf/layer.conf                               |   8 +
+ .../images/phytec-headless-image.bbappend     |  33 +++++
+ 23 files changed, 752 insertions(+)
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/.gitignore
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/Dockerfile
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/README.md
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/docker-compose.yml
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/docker_install.sh
+ create mode 100755 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/entrypoint.sh
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/main.py
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/modbus_plugin.service
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/modbus_plugin/__init__.py
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/modbus_plugin/app.py
+ create mode 100755 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/entrypoint.sh
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/main.py
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/modbus_plugin/__init__.py
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/modbus_plugin/app.py
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/tests/test_app.py
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/tests/test_main.py
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/requirements.txt
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/tedge_install.sh
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/tests/test_app.py
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/tests/test_main.py
+ create mode 100644 Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/phytedge-modbus_1.0.bb
+ create mode 100644 recipes-images/images/phytec-headless-image.bbappend
+
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/.gitignore b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/.gitignore
+new file mode 100644
+index 00000000..1ca28523
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/.gitignore
+@@ -0,0 +1,4 @@
++project_functionality_requirements_.md
++log.txt
++.vscode
++venv
+\ No newline at end of file
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/Dockerfile b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/Dockerfile
+new file mode 100644
+index 00000000..9e1cb292
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/Dockerfile
+@@ -0,0 +1,19 @@
++FROM python:3.11-slim
++
++WORKDIR /app
++
++COPY requirements.txt ./
++RUN pip install --no-cache-dir -r requirements.txt
++
++# Install tedge CLI
++RUN apt-get update && \
++    apt-get install -y curl && \
++    curl -fsSL https://thin-edge.io/install.sh | sh -s && \
++    apt-get clean && rm -rf /var/lib/apt/lists/*
++
++COPY modbus_plugin/ ./modbus_plugin/
++COPY main.py ./
++COPY entrypoint.sh ./entrypoint.sh
++RUN chmod +x ./entrypoint.sh
++
++ENTRYPOINT ["/app/entrypoint.sh"]
+\ No newline at end of file
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/README.md b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/README.md
+new file mode 100644
+index 00000000..8467ac63
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/README.md
+@@ -0,0 +1,110 @@
++# PHYTedge-EnergyMeter-Plugin
++
++## Pre-requisite Installation
++
++1. **Docker installation script**
++
++   ```bash
++   chmod +x docker_install.sh
++   ```
++
++   ```bash
++   ./docker_install.sh
++   ```
++
++2. **Thin-Edge installation script**
++
++   ```bash
++   chmod +x tedge_install.sh
++   ```
++
++   ```bash
++   ./tedge_install.sh
++   ```
++
++## How to Run (Native Installation)
++
++1. **Create and activate a Python virtual environment:**
++
++   ```bash
++   python3 -m venv venv
++   source venv/bin/activate
++   ```
++
++2. **Install dependencies:**
++
++   ```bash
++   pip install -r requirements.txt
++   ```
++
++3. **Run the application:**
++   ```bash
++   python3 main.py
++   ```
++
++---
++
++## How to Run (Docker Compose)
++
++**Recommended for simplicity and production use**
++
++1. **Build and start the service:**
++
++   ```bash
++   sudo docker compose up
++   ```
++
++   - This will build the image (if needed) and start the container with the correct device and network settings.
++   - The configuration is managed in `docker-compose.yml`.
++
++2. **Stop the service:**
++   Press `Ctrl+C` or run:
++   ```bash
++   sudo docker compose down
++   ```
++
++---
++
++## How to Run (Manual Docker Command)
++
++_Advanced/manual method_
++
++1. **Build the Docker image:**
++   ```bash
++   docker build -t modbus-plugin .
++   ```
++2. **Run the Docker container:**
++   ```bash
++   docker run --device=/dev/ttyUSB0 --rm --network=host modbus-plugin
++   ```
++   - Adjust `--device` as needed for your Modbus serial port.
++
++---
++
++## Usage & Configuration
++
++- The application reads Modbus data from a Selec MFM383A Energy meter and publishes to Cumulocity via Thin Edge MQTT.
++- Serial port and Modbus parameters can be changed in `modbus_plugin/app.py`.
++
++---
++
++## Badges
++
++![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
++![Docker](https://img.shields.io/badge/docker-ready-blue)
++
++---
++
++## Project Structure
++
++- `modbus_plugin/` - Main application package
++- `main.py` - Entrypoint script
++- `requirements.txt` - Python dependencies
++- `Dockerfile` - Containerization
++- `modbus_plugin.service` - Example systemd service file
++
++---
++
++## License
++
++MIT License
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/docker-compose.yml b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/docker-compose.yml
+new file mode 100644
+index 00000000..cc9753cb
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/docker-compose.yml
+@@ -0,0 +1,57 @@
++services:
++  modbus-c8y:
++    build: .
++    image: modbus-plugin
++    network_mode: host
++    devices:
++      - /dev/ttyUSB0
++    restart: unless-stopped
++    volumes:
++      - /etc/tedge/device-certs/tedge-certificate.pem:/etc/tedge/device-certs/tedge-certificate.pem:ro
++      - /etc/tedge/device-certs/tedge-private-key.pem:/etc/tedge/device-certs/tedge-private-key.pem:ro
++    environment:
++      CLOUD_PROVIDER: "c8y"
++      DEVICE_ID: "<Your Cumulocity Device ID>"
++      C8Y_URL: "<Your Cumulocity URL>"
++      C8Y_HTTP: "<Your Cumulocity HTTP URL eg. same as C8Y_URL>"
++      C8Y_MQTT: "<Your Cumulocity MQTT URL eg. same as C8Y_URL:8883>"
++      C8Y_USER_ID: "<Your Cumulocity User ID>"
++      C8Y_PASSWORD: "<Your Cumulocity Password>"
++      C8Y_ROOT_CERT_PATH: "/etc/tedge/device-certs/"
++      CLIENT_CERT: "/etc/tedge/device-certs/tedge-certificate.pem"
++      CLIENT_KEY: "/etc/tedge/device-certs/tedge-private-key.pem"
++
++  modbus-aws:
++    build: .
++    image: modbus-plugin
++    network_mode: host
++    devices:
++      - /dev/ttyUSB5
++    restart: unless-stopped
++    volumes:
++      - /etc/tedge/device-certs/tedge-certificate.pem:/etc/tedge/device-certs/tedge-certificate.pem:ro
++      - /etc/tedge/device-certs/tedge-private-key.pem:/etc/tedge/device-certs/tedge-private-key.pem:ro
++    environment:
++      CLOUD_PROVIDER: "aws"
++      AWS_URL: "<your-aws-endpoint>"
++      CLIENT_CERT: "/etc/tedge/device-certs/tedge-certificate.pem"
++      CLIENT_KEY: "/etc/tedge/device-certs/tedge-private-key"
++
++  modbus-tb:
++    build: .
++    image: modbus-plugin
++    network_mode: host
++    devices:
++      - /dev/ttyUSB0
++    restart: unless-stopped
++    volumes:
++      - /etc/tedge/device-certs/tedge-certificate.pem:/etc/tedge/device-certs/tedge-certificate.pem:ro
++      - /etc/tedge/device-certs/tedge-private-key.pem:/etc/tedge/device-certs/tedge-private-key.pem:ro
++      - /etc/tedge/device-certs/ca.pem:/etc/tedge/device-certs/ca.pem:ro
++    environment:
++      CLOUD_PROVIDER: "tb"
++      TB_HOST: "<Your ThingsBoard Host>"
++      TB_PORT: "8883"
++      CA_CERT: "/etc/tedge/device-certs/ca.pem"
++      CLIENT_CERT: "/etc/tedge/device-certs/tedge-certificate.pem"
++      CLIENT_KEY: "/etc/tedge/device-certs/tedge-private-key.pem"
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/docker_install.sh b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/docker_install.sh
+new file mode 100644
+index 00000000..4e6de786
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/docker_install.sh
+@@ -0,0 +1,50 @@
++#!/bin/bash
++
++set -e
++
++echo "=== Removing old Docker versions for conflicting perspective==="
++for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
++
++echo "=== Updating packages ==="
++sudo apt-get update
++
++echo "=== Installing dependencies ==="
++sudo apt-get install -y \
++    apt-transport-https \
++    software-properties-common \
++    ca-certificates \
++    curl \
++    gnupg \
++    lsb-release
++
++echo "=== Adding Docker’s official GPG key ==="
++sudo install -m 0755 -d /etc/apt/keyrings
++sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
++sudo chmod a+r /etc/apt/keyrings/docker.asc
++
++echo "=== Setting up the Docker repository ==="
++echo \
++  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
++  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
++  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
++
++echo "=== Updating package index again ==="
++sudo apt-get update
++
++echo "=== Installing Docker Engine ==="
++sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
++
++echo "=== Enabling Docker service ==="
++sudo systemctl enable docker
++sudo systemctl start docker
++
++echo "=== Docker version check ==="
++docker --version
++
++echo "=== Docker Compose v2 version check ==="
++docker compose version
++
++echo "=== Verifying Docker installation ==="
++sudo docker run hello-world
++
++echo "=== Installation completed! ==="
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/entrypoint.sh b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/entrypoint.sh
+new file mode 100755
+index 00000000..8e24583f
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/entrypoint.sh
+@@ -0,0 +1,43 @@
++#!/bin/bash
++set -e
++
++case "$CLOUD_PROVIDER" in
++  c8y)
++    tedge config set mqtt.client.host localhost
++    tedge config set mqtt.bind.port 8883
++    tedge config unset mqtt.client.auth.key_file
++    tedge config unset mqtt.client.auth.ca_file
++    tedge config unset mqtt.client.auth.cert_file
++    tedge config set device.id "$DEVICE_ID"
++    tedge config set c8y.url "$C8Y_URL"
++    tedge config set c8y.http "$C8Y_HTTP"
++    tedge config set c8y.mqtt "$C8Y_MQTT"
++    tedge config set c8y.root.cert_path "$C8Y_ROOT_CERT_PATH"
++    tedge cert upload c8y --user "$C8Y_USER_ID" --password "$C8Y_PASSWORD"
++    tedge connect c8y
++    ;;
++  aws)
++    tedge config set mqtt.client.host localhost
++    tedge config set mqtt.bind.port 8883
++    sudo tedge config unset mqtt.client.auth.ca_file
++    sudo tedge config unset mqtt.client.auth.cert_file
++    sudo tedge config unset mqtt.client.auth.key_file
++    tedge config set aws.url "$AWS_URL"
++    tedge config set mqtt.client.auth.cert_file "$CLIENT_CERT"
++    tedge config set mqtt.client.auth.key_file "$CLIENT_KEY"
++    tedge connect aws
++    ;;
++  tb)
++    tedge config set mqtt.client.host "$TB_HOST"
++    tedge config set mqtt.bind.port "$TB_PORT"
++    tedge config set mqtt.client.auth.ca_file "$CA_CERT"
++    tedge config set mqtt.client.auth.cert_file "$CLIENT_CERT"
++    tedge config set mqtt.client.auth.key_file "$CLIENT_KEY"
++    ;;
++  *)
++    echo "Unknown or unset CLOUD_PROVIDER. Set CLOUD_PROVIDER to c8y, aws, or tb."
++    exit 1
++    ;;
++esac
++
++exec python3 main.py
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/main.py b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/main.py
+new file mode 100644
+index 00000000..c7e0c19d
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/main.py
+@@ -0,0 +1,5 @@
++# Entrypoint for modbus_plugin
++from modbus_plugin import app
++
++if __name__ == "__main__":
++    app.main()
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/modbus_plugin.service b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/modbus_plugin.service
+new file mode 100644
+index 00000000..d3812e43
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/modbus_plugin.service
+@@ -0,0 +1,15 @@
++[Unit]
++Description=Meter Modbus Python Service
++After=network.target
++
++[Service]
++Type=simple
++ExecStart=<mention_your_venv_python3_path> <mention_your_modbus_plugin_main.py_path>
++WorkingDirectory=/home/debian/dev
++Restart=always
++RestartSec=5
++StandardOutput=journal
++StandardError=journal
++
++[Install]
++WantedBy=multi-user.target
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/modbus_plugin/__init__.py b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/modbus_plugin/__init__.py
+new file mode 100644
+index 00000000..ca7ac4e0
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/modbus_plugin/__init__.py
+@@ -0,0 +1 @@
++# __init__.py for the modbus_plugin package
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/modbus_plugin/app.py b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/modbus_plugin/app.py
+new file mode 100644
+index 00000000..b92efd83
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/modbus_plugin/app.py
+@@ -0,0 +1,138 @@
++"""
++modbus_plugin.app
++
++This module provides a generic Modbus device interface for reading measurements and publishing them to Thin Edge MQTT topics. Device-specific parameters are configurable, enabling easy migration to new Modbus hardware.
++Author: Dibyajyoti Jena
++"""
++
++import time
++import struct
++from pymodbus.client import ModbusSerialClient
++import subprocess
++
++class ModbusDevice:
++    def __init__(self, config):
++        self.config = config
++        self.failure_count = 0
++        self.alert_sent = False
++        self.event_sent = False
++        self.client = ModbusSerialClient(**config['connection'])
++
++    def read_float(self, address, byte_order):
++        """
++        Reads a 32-bit floating point value from two consecutive Modbus input registers.
++
++        Args:to the TAURI-L 
++            address (int): The starting register address to read from.
++            byte_order (str): Byte order, either 'MSB' or 'LSB'.
++
++        Returns:
++            float or None: The floating point value read from the registers, or None if an error occurs.
++        """
++        try:
++            response = self.client.read_input_registers(address=address, count=2, slave=self.config['slave'])
++            if response.isError():
++                raise Exception(f"Modbus error: {response}")
++            self.failure_count = 0
++            self.alert_sent = False
++            if not self.event_sent:
++                event_payload = [
++                    "tedge", "mqtt", "pub", self.config['event_topic'],
++                    self.config['event_message']
++                ]
++                subprocess.run(event_payload, check=True)
++                print("Event Sto the TAURI-L ent: Device is online")
++                self.event_sent = True
++            registers = response.registers
++            raw = (registers[0] << 16) | registers[1]
++            float_value = struct.unpack('>f', raw.to_bytes(4, byteorder='big'))[0]
++            return float_value
++        except Exception as e:
++            print(f"Exception in Modbus read: {e}")
++            self.failure_count += 1
++            print(f"Modbus read failed ({self.failure_count}/{self.config['failure_threshold']})")
++            if self.failure_count >= self.config['failure_threshold'] and not self.alert_sent:
++                try:
++                    alert_payload = [
++                        "tedge", "mqtt", "pub", self.config['alert_topic'],
++                        self.config['alert_message']
++                    ]
++                    subprocess.run(alert_payload, check=True)
++                    print("Alert sent: Device has been shutdown.")
++                    self.alert_sent = True
++                    self.event_sent = False
++                except Exception as e:
++                    print(f"Failed to send alert: {e}")
++            time.sleep(2)
++            return None
++
++    def send_measurement(self, name, value):
++        """
++        Publishes a measurement value to the ThingsBoard MQTT topic.
++
++        Args:
++            name (str): The name of the measurement (e.g., 'Voltage').
++            value (float): The value to publish.
++        """
++        try:
++            formatted_value = "{:.3f}".format(value)
++            payload = f'{{"{name}": {formatted_value}}}'
++            cmd = ["tedge", "mqtt", "pub", self.config['measurement_topic'], payload]
++            subprocess.run(cmd, check=True)
++            print(f"Sent {name}: {formatted_value}")
++        except Exception as e:
++            print(f"Failed to send {name} measurement: {e}")
++
++    def run(self):
++        """
++        Main loop for connecting to the Modbus device, reading measurements, and publishing them periodically.
++        """
++        if self.client.connect():
++            print(f"Connected to Modbus device {self.config['name']}. Press Ctrl+C to stop.")
++            try:
++                while True:
++                    for meas in self.config['measurements']:
++                        value = self.read_float(meas['address'], meas['byte_order'])
++                        if value is not None:
++                            self.send_measurement(meas['name'], value)
++                        else:
++                            print(f"Failed to read {meas['name']}")
++                    time.sleep(self.config.get('interval', 2))
++            except KeyboardInterrupt:
++                print("\nStopping Modbus readings...")
++                self.client.close()
++        else:
++            print("Failed to connect.")
++
++DEVICE_CONFIG = {
++    'name': 'SDM230',
++    'slave': 1,
++    'connection': {
++        'port': '/dev/ttymxc1',
++        'baudrate': 9600,
++        'parity': 'N',
++        'stopbits': 1,
++        'bytesize': 8,
++        'timeout': 2
++    },
++    'failure_threshold': 3,	
++    'event_topic': 'te/device/main///e/event_SelecMFM383A',
++    'event_message': '{"text": "Selec MFM383A Energy meter is online/connected"}',
++    'alert_topic': 'te/device/main///a/alert_SelecMFM383A',
++    'alert_message': '{"text": "Selec MFM383A Energy meter has been shutdown", "severity": "critical"}',
++    'measurement_topic': 'v1/devices/me/SEMtelemetry',
++    'measurements': [
++        {'name': 'Voltage', 'address': 0, 'byte_order': 'MSB'},
++        {'name': 'Current', 'address': 6, 'byte_order': 'MSB'},
++        {'name': 'Frequency', 'address': 70, 'byte_order': 'MSB'},
++        {'name': 'Active Power', 'address': 12, 'byte_order': 'MSB'},
++        {'name': 'Apparent Power', 'address': 18, 'byte_order': 'MSB'},
++        {'name': 'Power Factor', 'address': 30, 'byte_order': 'MSB'},
++        {'name': 'Energy', 'address': 342, 'byte_order': 'MSB'}
++    ],
++    'interval': 2
++}
++
++def main():
++    device = ModbusDevice(DEVICE_CONFIG)
++    device.run()
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/entrypoint.sh b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/entrypoint.sh
+new file mode 100755
+index 00000000..8e24583f
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/entrypoint.sh
+@@ -0,0 +1,43 @@
++#!/bin/bash
++set -e
++
++case "$CLOUD_PROVIDER" in
++  c8y)
++    tedge config set mqtt.client.host localhost
++    tedge config set mqtt.bind.port 8883
++    tedge config unset mqtt.client.auth.key_file
++    tedge config unset mqtt.client.auth.ca_file
++    tedge config unset mqtt.client.auth.cert_file
++    tedge config set device.id "$DEVICE_ID"
++    tedge config set c8y.url "$C8Y_URL"
++    tedge config set c8y.http "$C8Y_HTTP"
++    tedge config set c8y.mqtt "$C8Y_MQTT"
++    tedge config set c8y.root.cert_path "$C8Y_ROOT_CERT_PATH"
++    tedge cert upload c8y --user "$C8Y_USER_ID" --password "$C8Y_PASSWORD"
++    tedge connect c8y
++    ;;
++  aws)
++    tedge config set mqtt.client.host localhost
++    tedge config set mqtt.bind.port 8883
++    sudo tedge config unset mqtt.client.auth.ca_file
++    sudo tedge config unset mqtt.client.auth.cert_file
++    sudo tedge config unset mqtt.client.auth.key_file
++    tedge config set aws.url "$AWS_URL"
++    tedge config set mqtt.client.auth.cert_file "$CLIENT_CERT"
++    tedge config set mqtt.client.auth.key_file "$CLIENT_KEY"
++    tedge connect aws
++    ;;
++  tb)
++    tedge config set mqtt.client.host "$TB_HOST"
++    tedge config set mqtt.bind.port "$TB_PORT"
++    tedge config set mqtt.client.auth.ca_file "$CA_CERT"
++    tedge config set mqtt.client.auth.cert_file "$CLIENT_CERT"
++    tedge config set mqtt.client.auth.key_file "$CLIENT_KEY"
++    ;;
++  *)
++    echo "Unknown or unset CLOUD_PROVIDER. Set CLOUD_PROVIDER to c8y, aws, or tb."
++    exit 1
++    ;;
++esac
++
++exec python3 main.py
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/main.py b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/main.py
+new file mode 100644
+index 00000000..c7e0c19d
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/main.py
+@@ -0,0 +1,5 @@
++# Entrypoint for modbus_plugin
++from modbus_plugin import app
++
++if __name__ == "__main__":
++    app.main()
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/modbus_plugin/__init__.py b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/modbus_plugin/__init__.py
+new file mode 100644
+index 00000000..ca7ac4e0
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/modbus_plugin/__init__.py
+@@ -0,0 +1 @@
++# __init__.py for the modbus_plugin package
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/modbus_plugin/app.py b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/modbus_plugin/app.py
+new file mode 100644
+index 00000000..b92efd83
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/modbus_plugin/app.py
+@@ -0,0 +1,138 @@
++"""
++modbus_plugin.app
++
++This module provides a generic Modbus device interface for reading measurements and publishing them to Thin Edge MQTT topics. Device-specific parameters are configurable, enabling easy migration to new Modbus hardware.
++Author: Dibyajyoti Jena
++"""
++
++import time
++import struct
++from pymodbus.client import ModbusSerialClient
++import subprocess
++
++class ModbusDevice:
++    def __init__(self, config):
++        self.config = config
++        self.failure_count = 0
++        self.alert_sent = False
++        self.event_sent = False
++        self.client = ModbusSerialClient(**config['connection'])
++
++    def read_float(self, address, byte_order):
++        """
++        Reads a 32-bit floating point value from two consecutive Modbus input registers.
++
++        Args:to the TAURI-L 
++            address (int): The starting register address to read from.
++            byte_order (str): Byte order, either 'MSB' or 'LSB'.
++
++        Returns:
++            float or None: The floating point value read from the registers, or None if an error occurs.
++        """
++        try:
++            response = self.client.read_input_registers(address=address, count=2, slave=self.config['slave'])
++            if response.isError():
++                raise Exception(f"Modbus error: {response}")
++            self.failure_count = 0
++            self.alert_sent = False
++            if not self.event_sent:
++                event_payload = [
++                    "tedge", "mqtt", "pub", self.config['event_topic'],
++                    self.config['event_message']
++                ]
++                subprocess.run(event_payload, check=True)
++                print("Event Sto the TAURI-L ent: Device is online")
++                self.event_sent = True
++            registers = response.registers
++            raw = (registers[0] << 16) | registers[1]
++            float_value = struct.unpack('>f', raw.to_bytes(4, byteorder='big'))[0]
++            return float_value
++        except Exception as e:
++            print(f"Exception in Modbus read: {e}")
++            self.failure_count += 1
++            print(f"Modbus read failed ({self.failure_count}/{self.config['failure_threshold']})")
++            if self.failure_count >= self.config['failure_threshold'] and not self.alert_sent:
++                try:
++                    alert_payload = [
++                        "tedge", "mqtt", "pub", self.config['alert_topic'],
++                        self.config['alert_message']
++                    ]
++                    subprocess.run(alert_payload, check=True)
++                    print("Alert sent: Device has been shutdown.")
++                    self.alert_sent = True
++                    self.event_sent = False
++                except Exception as e:
++                    print(f"Failed to send alert: {e}")
++            time.sleep(2)
++            return None
++
++    def send_measurement(self, name, value):
++        """
++        Publishes a measurement value to the ThingsBoard MQTT topic.
++
++        Args:
++            name (str): The name of the measurement (e.g., 'Voltage').
++            value (float): The value to publish.
++        """
++        try:
++            formatted_value = "{:.3f}".format(value)
++            payload = f'{{"{name}": {formatted_value}}}'
++            cmd = ["tedge", "mqtt", "pub", self.config['measurement_topic'], payload]
++            subprocess.run(cmd, check=True)
++            print(f"Sent {name}: {formatted_value}")
++        except Exception as e:
++            print(f"Failed to send {name} measurement: {e}")
++
++    def run(self):
++        """
++        Main loop for connecting to the Modbus device, reading measurements, and publishing them periodically.
++        """
++        if self.client.connect():
++            print(f"Connected to Modbus device {self.config['name']}. Press Ctrl+C to stop.")
++            try:
++                while True:
++                    for meas in self.config['measurements']:
++                        value = self.read_float(meas['address'], meas['byte_order'])
++                        if value is not None:
++                            self.send_measurement(meas['name'], value)
++                        else:
++                            print(f"Failed to read {meas['name']}")
++                    time.sleep(self.config.get('interval', 2))
++            except KeyboardInterrupt:
++                print("\nStopping Modbus readings...")
++                self.client.close()
++        else:
++            print("Failed to connect.")
++
++DEVICE_CONFIG = {
++    'name': 'SDM230',
++    'slave': 1,
++    'connection': {
++        'port': '/dev/ttymxc1',
++        'baudrate': 9600,
++        'parity': 'N',
++        'stopbits': 1,
++        'bytesize': 8,
++        'timeout': 2
++    },
++    'failure_threshold': 3,	
++    'event_topic': 'te/device/main///e/event_SelecMFM383A',
++    'event_message': '{"text": "Selec MFM383A Energy meter is online/connected"}',
++    'alert_topic': 'te/device/main///a/alert_SelecMFM383A',
++    'alert_message': '{"text": "Selec MFM383A Energy meter has been shutdown", "severity": "critical"}',
++    'measurement_topic': 'v1/devices/me/SEMtelemetry',
++    'measurements': [
++        {'name': 'Voltage', 'address': 0, 'byte_order': 'MSB'},
++        {'name': 'Current', 'address': 6, 'byte_order': 'MSB'},
++        {'name': 'Frequency', 'address': 70, 'byte_order': 'MSB'},
++        {'name': 'Active Power', 'address': 12, 'byte_order': 'MSB'},
++        {'name': 'Apparent Power', 'address': 18, 'byte_order': 'MSB'},
++        {'name': 'Power Factor', 'address': 30, 'byte_order': 'MSB'},
++        {'name': 'Energy', 'address': 342, 'byte_order': 'MSB'}
++    ],
++    'interval': 2
++}
++
++def main():
++    device = ModbusDevice(DEVICE_CONFIG)
++    device.run()
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/tests/test_app.py b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/tests/test_app.py
+new file mode 100644
+index 00000000..17525cba
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/tests/test_app.py
+@@ -0,0 +1,8 @@
++import pytest
++from modbus_plugin.app import *
++
++# Example test case
++def test_example():
++    assert True  # Replace with actual test logic
++
++# Add more test cases here
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/tests/test_main.py b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/tests/test_main.py
+new file mode 100644
+index 00000000..821e59d0
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/my/tests/test_main.py
+@@ -0,0 +1,8 @@
++import pytest
++from main import *
++
++# Example test case
++def test_example_main():
++    assert True 
++
++
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/requirements.txt b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/requirements.txt
+new file mode 100644
+index 00000000..58ffb84d
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/requirements.txt
+@@ -0,0 +1,3 @@
++# requirements.txt for modbus_plugin
++pymodbus==3.9.2
++pyserial==3.5
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/tedge_install.sh b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/tedge_install.sh
+new file mode 100644
+index 00000000..0dbc647c
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/tedge_install.sh
+@@ -0,0 +1,25 @@
++#!/bin/bash
++
++set -e
++
++echo "------------------------------------------------"
++echo "Thin-Edge.io Installer Script for Debian 12"
++echo "------------------------------------------------"
++
++# 1. Update system
++echo "Updating system packages..."
++sudo apt update
++
++# 2. Install dependencies
++echo "Installing dependencies..."
++sudo apt install -y curl apt-transport-https gnupg lsb-release
++
++# 3. Update and install tedge
++echo "Installing Thin-Edge.io..."
++curl -fsSL https://thin-edge.io/install.sh | sh -s
++
++# 4. Check installation
++echo "Verifying installation..."
++tedge --version
++
++echo "Thin-Edge.io successfully installed on Debian 12."
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/tests/test_app.py b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/tests/test_app.py
+new file mode 100644
+index 00000000..17525cba
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/tests/test_app.py
+@@ -0,0 +1,8 @@
++import pytest
++from modbus_plugin.app import *
++
++# Example test case
++def test_example():
++    assert True  # Replace with actual test logic
++
++# Add more test cases here
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/tests/test_main.py b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/tests/test_main.py
+new file mode 100644
+index 00000000..821e59d0
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/files/PHYTedge-Modbus-Plugin/tests/test_main.py
+@@ -0,0 +1,8 @@
++import pytest
++from main import *
++
++# Example test case
++def test_example_main():
++    assert True 
++
++
+diff --git a/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/phytedge-modbus_1.0.bb b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/phytedge-modbus_1.0.bb
+new file mode 100644
+index 00000000..e5949c63
+--- /dev/null
++++ b/Te-PD-25.1.0/Te-applications/recipes-phytedge/phytedge-modbus/phytedge-modbus_1.0.bb
+@@ -0,0 +1,22 @@
++SUMMARY = "PHYTedge Modbus Plugin (files only)"
++LICENSE = "CLOSED"
++
++SRC_URI = "file://PHYTedge-Modbus-Plugin"
++
++S = "${WORKDIR}/PHYTedge-Modbus-Plugin"
++
++RDEPENDS:${PN} += "bash"
++
++do_install() {
++    install -d ${D}/usr/share/phytedge-modbus
++
++    cp -r ${S}/* ${D}/usr/share/phytedge-modbus/
++
++    # Remove host-only artifacts
++    rm -rf ${D}/usr/share/phytedge-modbus/venv
++    rm -rf ${D}/usr/share/phytedge-modbus/build
++}
++
++FILES:${PN} += "\
++    /usr/share/phytedge-modbus \
++"
+diff --git a/conf/layer.conf b/conf/layer.conf
+index 89c305d5..146964d7 100644
+--- a/conf/layer.conf
++++ b/conf/layer.conf
+@@ -56,3 +56,11 @@ BBMASK:append:k3 = "\
+     meta-ti/meta-ti-bsp/recipes-security/optee/ \
+     meta-ti/meta-ti-bsp/recipes-bsp/trusted-firmware-a/ \
+ "
++
++LAYERDEPENDS_phytec += "scarthgap-rust-mixin meta-tedge meta-tedge-common"
++
++BBFILES += " \
++    ${LAYERDIR}/Te-PD-25.1.0/Te-applications/recipes-*/*/*.bb \
++    ${LAYERDIR}/recipes-*/*/*.bb \
++    ${LAYERDIR}/recipes-*/*/*.bbappend \
++"
+diff --git a/recipes-images/images/phytec-headless-image.bbappend b/recipes-images/images/phytec-headless-image.bbappend
+new file mode 100644
+index 00000000..5cab8a1f
+--- /dev/null
++++ b/recipes-images/images/phytec-headless-image.bbappend
+@@ -0,0 +1,33 @@
++# -------------------------------
++# Enable systemd
++# -------------------------------
++#DISTRO_FEATURES:remove = "sysvinit sysvinit-systemd"
++DISTRO_FEATURES:append = " systemd rust"
++
++VIRTUAL-RUNTIME_init_manager = "systemd"
++
++# -------------------------------
++# Auto enable Mosquitto service
++# -------------------------------
++SYSTEMD_AUTO_ENABLE:pn-mosquitto = "enable"
++
++# -------------------------------
++# Install thin-edge + dependencies
++# -------------------------------
++IMAGE_INSTALL:append = " \
++    tedge \
++    tedge-agent \
++    tedge-mapper-c8y \
++    tedge-mapper-aws \
++    tedge-mapper-az \
++    mosquitto \
++    mosquitto-clients \
++    ca-certificates \
++    curl \
++    python3 \
++    python3-pymodbus \
++    python3-pyserial \
++    python3-requests \
++    python3-dotenv \
++    phytedge-modbus \
++"
+-- 
+2.34.1
+

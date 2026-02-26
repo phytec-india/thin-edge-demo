@@ -1,0 +1,17 @@
+Release Notes Tauri-L_i.MX8MM-Thin-Edge Yocto BSP:
+================================
+
+BSP-Yocto-NXP-i.MX8MM-PD25.1.0          2025-3-28
+==================================================
+- Linux NXP Vendor Kernel v6.6.52-2.2.0-phy9 (based on NXP tag lf-6.6.52-2.2.0)
+- U-boot v2024.04-2.2.0-phy10 (based on NXP tag lf-6.6.52-2.2.0)
+- Yocto 5.0.8 LTS (scarthgap)
+
+Tested Yocto Images:
+--------------------
+- phytec-headless-image:
+  * phygate-tauri-l-imx8mm-2
+  
+Build Environment:
+------------------
+- Ubuntu 22.04.5 64-bit

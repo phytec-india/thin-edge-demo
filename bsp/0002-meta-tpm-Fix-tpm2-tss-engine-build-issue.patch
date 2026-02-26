@@ -1,0 +1,27 @@
+From 3eb8347c940e02556858710b01303cfec7a36f00 Mon Sep 17 00:00:00 2001
+From: Surendar <surendar.k@phytecembedded.in>
+Date: Sun, 22 Feb 2026 19:18:27 +0530
+Subject: [PATCH 2/2] meta-tpm: Fix tpm2-tss-engine build issue
+
+---
+ .../recipes-tpm2/tpm2-tss-engine/tpm2-tss-engine_1.1.0.bb     | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/meta-tpm/recipes-tpm2/tpm2-tss-engine/tpm2-tss-engine_1.1.0.bb b/meta-tpm/recipes-tpm2/tpm2-tss-engine/tpm2-tss-engine_1.1.0.bb
+index 89162ee..7ae1989 100644
+--- a/meta-tpm/recipes-tpm2/tpm2-tss-engine/tpm2-tss-engine_1.1.0.bb
++++ b/meta-tpm/recipes-tpm2/tpm2-tss-engine/tpm2-tss-engine_1.1.0.bb
+@@ -16,6 +16,10 @@ UPSTREAM_CHECK_URI = "https://github.com/tpm2-software/${BPN}/releases"
+ 
+ inherit autotools-brokensep pkgconfig systemd
+ 
++do_compile:prepend() {
++export PANDOC=true
++}
++
+ # It uses the API deprecated since the OpenSSL 3.0
+ CFLAGS:append = ' -Wno-deprecated-declarations -Wno-unused-parameter'
+ 
+-- 
+2.34.1
+
