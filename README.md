@@ -57,8 +57,6 @@ https://phytec-india.github.io/thin-edge-demo/
 
 Copyright (c) PHYTEC INDIA
 
-See [LICENSE](LICENSE) for details.
-
 ## Support
 
 For issues or questions, please open an issue on this repository or contact PHYTEC INDIA support.
