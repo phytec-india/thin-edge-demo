@@ -12,7 +12,7 @@ Welcome to Thin-edge Demo documentation!
 
    yoctobsp
    overview
-   digital
+   .. digital
 
 
 Indices and tables
